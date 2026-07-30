@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Alarm Clock</title>
+<style>
+  :root {
+    --bg: #0e1016;
+    --panel: #171a22;
+    --card: #1e222c;
+    --text: #eef0f5;
+    --muted: #7a8092;
+    --accent: #ff9f5b;
+    --accent-dim: #3a2a1c;
+    --danger: #ff6b6b;
+    --ok: #4fd1a5;
+    --border: #2a2e39;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--bg);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    color: var(--text);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 30px 16px;
+  }
+  .app {
+    width: 420px;
+  }
+  .clock {
+    text-align: center;
+    margin-bottom: 22px;
+  }
+  .clock .time {
+    font-size: 46px;
+    font-weight: 200;
+    letter-spacing: 2px;
+  }
+  .clock .date {
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: 4px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .add-btn {
+    width: 100%;
+    padding: 14px;
+    border-radius: 14px;
+    border: none;
+    background: var(--accent);
+    color: #1a1200;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 20px;
+    transition: background 0.15s;
+  }
+  .add-btn:hover { background: #ffb47a; }
+
+  .alarm-list { display: flex; flex-direction: column; gap: 12px; }
+  .empty {
+    text-align: center;
+    color: var(--muted);
+    padding: 30px 10px;
+    font-size: 14px;
+  }
+
+  .alarm-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 16px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+  }
+  .alarm-card.disabled { opacity: 0.45; }
+  .alarm-info { flex: 1; min-width: 0; }
+  .alarm-time { font-size: 26px; font-weight: 300; }
+  .alarm-label {
+    color: var(--accent);
+    font-size: 13px;
+    margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .alarm-repeat {
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 4px;
+    letter-spacing: 0.5px;
+  }
+  .alarm-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .switch {
+    position: relative;
+    width: 44px;
+    height: 26px;
+    flex-shrink: 0;
+  }
+  .switch input { opacity: 0; width: 0; height: 0; }
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    inset: 0;
+    background: #3a3f4c;
+    border-radius: 26px;
+    transition: 0.2s;
+  }
+  .slider::before {
+    content: "";
+    position: absolute;
+    height: 20px;
+    width: 20px;
+    left: 3px;
+    bottom: 3px;
+    background: white;
+    border-radius: 50%;
+    transition: 0.2s;
+  }
+  input:checked + .slider { background: var(--ok); }
+  input:checked + .slider::before { transform: translateX(18px); }
+
+  .del-btn {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 18px;
+    cursor: pointer;
+    padding: 4px 6px;
+  }
+  .del-btn:hover { color: var(--danger); }
+
+  /* Modal */
+  .overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+  }
+  .overlay.show { display: flex; }
+  .modal {
+    background: var(--panel);
+    border-radius: 18px;
+    padding: 24px;
+    width: 360px;
+    max-width: 90vw;
+    border: 1px solid var(--border);
+  }
+  .modal h3 { margin: 0 0 16px; font-weight: 500; }
+  .field { margin-bottom: 16px; }
+  .field label {
+    display: block;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 6px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .field input[type="time"],
+  .field input[type="text"],
+  .field input[type="number"] {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--text);
+    font-size: 15px;
+  }
+  .presets { display: flex; gap: 8px; margin-top: 8px; }
+  .preset-btn {
+    flex: 1;
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--muted);
+    font-size: 12px;
+    cursor: pointer;
+  }
+  .preset-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  .days { display: flex; gap: 6px; flex-wrap: wrap; }
+  .day-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--muted);
+    font-size: 12px;
+    cursor: pointer;
+  }
+  .day-btn.active { background: var(--accent); color: #1a1200; border-color: var(--accent); }
+
+  .modal-actions { display: flex; gap: 10px; margin-top: 6px; }
+  .modal-actions button {
+    flex: 1;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  .btn-cancel { background: var(--card); color: var(--muted); border: 1px solid var(--border) !important; }
+  .btn-save { background: var(--accent); color: #1a1200; font-weight: 600; }
+
+  /* Ringing overlay */
+  .ring-modal {
+    text-align: center;
+  }
+  .ring-modal .ring-label { font-size: 20px; color: var(--accent); margin-bottom: 6px; }
+  .ring-modal .ring-time { font-size: 48px; font-weight: 200; margin-bottom: 24px; }
+  .ring-actions { display: flex; gap: 12px; }
+  .btn-snooze { background: #3a3f4c; color: var(--text); }
+  .btn-stop { background: var(--danger); color: #2a0d0d; font-weight: 700; }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <div class="clock">
+    <div class="time" id="liveTime">--:--:--</div>
+    <div class="date" id="liveDate"></div>
+  </div>
+
+  <button class="add-btn" onclick="openModal()">+ Add Alarm</button>
+  <button class="add-btn" style="background:#3a3f4c; color:#eef0f5; margin-top:-10px;" onclick="testSound()">🔊 Test Sound</button>
+
+  <div class="alarm-list" id="alarmList"></div>
+</div>
+
+<!-- Add/Edit Alarm Modal -->
+<div class="overlay" id="modalOverlay">
+  <div class="modal">
+    <h3>New Alarm</h3>
+    <div class="field">
+      <label>Time</label>
+      <input type="time" id="inputTime">
+    </div>
+    <div class="field">
+      <label>Label</label>
+      <input type="text" id="inputLabel" placeholder="e.g. Wake up">
+      <div class="presets">
+        <button class="preset-btn" onclick="setLabel('Wake up')">Wake up</button>
+        <button class="preset-btn" onclick="setLabel('Sleep reminder')">Sleep reminder</button>
+        <button class="preset-btn" onclick="setLabel('Nap')">Nap</button>
+      </div>
+    </div>
+    <div class="field">
+      <label>Repeat</label>
+      <div class="days" id="dayPicker"></div>
+    </div>
+    <div class="field">
+      <label>Snooze duration (minutes)</label>
+      <input type="number" id="inputSnooze" value="5" min="1" max="30">
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-save" onclick="saveAlarm()">Save Alarm</button>
+    </div>
+  </div>
+</div>
+
+<!-- Ringing Modal -->
+<div class="overlay" id="ringOverlay">
+  <div class="modal ring-modal">
+    <div class="ring-label" id="ringLabel">Alarm</div>
+    <div class="ring-time" id="ringTime">00:00</div>
+    <div class="ring-actions">
+      <button class="btn-snooze" onclick="snoozeAlarm()">Snooze</button>
+      <button class="btn-stop" onclick="stopAlarm()">Stop</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const dayNames = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+  let alarms = [];
+  let nextId = 1;
+  let editingId = null;
+  let selectedDays = new Set();
+  let ringingAlarm = null;
+  let audioCtx = null;
+  let oscillators = [];
+  let audioUnlocked = false;
+
+  // Browsers block sound until the user has interacted with the page.
+  // Unlock audio on the very first click/tap anywhere.
+  function unlockAudio() {
+    if (audioUnlocked) return;
+    audioUnlocked = true;
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    gain.gain.value = 0; // silent
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.01);
+    ctx.close();
+  }
+  document.addEventListener('click', unlockAudio, { once: true });
+  document.addEventListener('touchstart', unlockAudio, { once: true });
+
+  // ---- Live clock ----
+  function updateLiveClock() {
+    const now = new Date();
+    document.getElementById('liveTime').textContent = now.toLocaleTimeString([], { hour12: true });
+    document.getElementById('liveDate').textContent = now.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric' });
+    checkAlarms(now);
+  }
+  setInterval(updateLiveClock, 1000);
+  updateLiveClock();
+
+  // ---- Day picker ----
+  function buildDayPicker() {
+    const picker = document.getElementById('dayPicker');
+    picker.innerHTML = '';
+    dayNames.forEach((d, i) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'day-btn';
+      btn.textContent = d;
+      btn.onclick = () => {
+        if (selectedDays.has(i)) selectedDays.delete(i);
+        else selectedDays.add(i);
+        btn.classList.toggle('active');
+      };
+      picker.appendChild(btn);
+    });
+  }
+
+  function setLabel(text) {
+    document.getElementById('inputLabel').value = text;
+  }
+
+  // ---- Modal ----
+  function openModal(id = null) {
+    editingId = id;
+    selectedDays = new Set();
+    buildDayPicker();
+    if (id) {
+      const alarm = alarms.find(a => a.id === id);
+      document.getElementById('inputTime').value = alarm.time;
+      document.getElementById('inputLabel').value = alarm.label;
+      document.getElementById('inputSnooze').value = alarm.snoozeMinutes;
+      alarm.repeatDays.forEach(d => selectedDays.add(d));
+      document.querySelectorAll('.day-btn').forEach((btn, i) => {
+        if (selectedDays.has(i)) btn.classList.add('active');
+      });
+      document.querySelector('.modal h3').textContent = 'Edit Alarm';
+    } else {
+      document.getElementById('inputTime').value = '07:00';
+      document.getElementById('inputLabel').value = '';
+      document.getElementById('inputSnooze').value = 5;
+      document.querySelector('.modal h3').textContent = 'New Alarm';
+    }
+    document.getElementById('modalOverlay').classList.add('show');
+  }
+
+  function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('show');
+  }
+
+  function saveAlarm() {
+    const time = document.getElementById('inputTime').value;
+    if (!time) return;
+    const label = document.getElementById('inputLabel').value.trim() || 'Alarm';
+    const snoozeMinutes = parseInt(document.getElementById('inputSnooze').value) || 5;
+    const repeatDays = Array.from(selectedDays).sort();
+
+    if (editingId) {
+      const alarm = alarms.find(a => a.id === editingId);
+      alarm.time = time;
+      alarm.label = label;
+      alarm.snoozeMinutes = snoozeMinutes;
+      alarm.repeatDays = repeatDays;
+      alarm.enabled = true;
+    } else {
+      alarms.push({
+        id: nextId++,
+        time, label, snoozeMinutes, repeatDays,
+        enabled: true
+      });
+    }
+    closeModal();
+    renderAlarms();
+  }
+
+  function deleteAlarm(id, ev) {
+    ev.stopPropagation();
+    alarms = alarms.filter(a => a.id !== id);
+    renderAlarms();
+  }
+
+  function toggleAlarm(id, ev) {
+    ev.stopPropagation();
+    const alarm = alarms.find(a => a.id === id);
+    alarm.enabled = !alarm.enabled;
+    renderAlarms();
+  }
+
+  function formatTime12(time) {
+    const [h, m] = time.split(':').map(Number);
+    const period = h >= 12 ? 'PM' : 'AM';
+    const hour12 = h % 12 === 0 ? 12 : h % 12;
+    return `${hour12}:${String(m).padStart(2, '0')} ${period}`;
+  }
+
+  function renderAlarms() {
+    const list = document.getElementById('alarmList');
+    list.innerHTML = '';
+    if (alarms.length === 0) {
+      list.innerHTML = '<div class="empty">No alarms yet. Tap "Add Alarm" to create one.</div>';
+      return;
+    }
+    alarms.sort((a, b) => a.time.localeCompare(b.time));
+    alarms.forEach(alarm => {
+      const card = document.createElement('div');
+      card.className = 'alarm-card' + (alarm.enabled ? '' : ' disabled');
+      card.onclick = () => openModal(alarm.id);
+
+      const repeatText = alarm.repeatDays.length === 0
+        ? 'Once'
+        : alarm.repeatDays.length === 7
+          ? 'Every day'
+          : alarm.repeatDays.map(i => dayNames[i]).join(' ');
+
+      card.innerHTML = `
+        <div class="alarm-info">
+          <div class="alarm-time">${formatTime12(alarm.time)}</div>
+          <div class="alarm-label">${alarm.label}</div>
+          <div class="alarm-repeat">${repeatText} · Snooze ${alarm.snoozeMinutes}m</div>
+        </div>
+        <div class="alarm-actions">
+          <label class="switch" onclick="event.stopPropagation()">
+            <input type="checkbox" ${alarm.enabled ? 'checked' : ''} onchange="toggleAlarm(${alarm.id}, event)">
+            <span class="slider"></span>
+          </label>
+          <button class="del-btn" onclick="deleteAlarm(${alarm.id}, event)">✕</button>
+        </div>
+      `;
+      list.appendChild(card);
+    });
+  }
+
+  // ---- Alarm checking ----
+  function checkAlarms(now) {
+    const hh = String(now.getHours()).padStart(2, '0');
+    const mm = String(now.getMinutes()).padStart(2, '0');
+    const currentTime = `${hh}:${mm}`;
+    const currentDay = now.getDay();
+
+    if (now.getSeconds() !== 0) return; // only fire once per minute mark
+    if (ringingAlarm) return;
+
+    for (const alarm of alarms) {
+      if (!alarm.enabled) continue;
+      if (alarm.time !== currentTime) continue;
+      const matchesDay = alarm.repeatDays.length === 0 || alarm.repeatDays.includes(currentDay);
+      if (!matchesDay) continue;
+      triggerAlarm(alarm);
+      break;
+    }
+  }
+
+  function triggerAlarm(alarm) {
+    ringingAlarm = alarm;
+    document.getElementById('ringLabel').textContent = alarm.label;
+    document.getElementById('ringTime').textContent = formatTime12(alarm.time);
+    document.getElementById('ringOverlay').classList.add('show');
+    playAlarmSound();
+
+    // one-time alarms turn off after ringing
+    if (alarm.repeatDays.length === 0) {
+      alarm.enabled = false;
+    }
+    renderAlarms();
+  }
+
+  function playAlarmSound() {
+    stopSound();
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+    let toggle = true;
+    function beep() {
+      if (!audioCtx) return;
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = toggle ? 880 : 660;
+      gain.gain.value = 0.15;
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.35);
+      oscillators.push(osc);
+      toggle = !toggle;
+    }
+    beep();
+    window.alarmInterval = setInterval(beep, 500);
+  }
+
+  function testSound() {
+    playAlarmSound();
+    setTimeout(stopSound, 1500);
+  }
+
+  function stopSound() {
+    if (window.alarmInterval) clearInterval(window.alarmInterval);
+    oscillators = [];
+    if (audioCtx) {
+      audioCtx.close();
+      audioCtx = null;
+    }
+  }
+
+  function stopAlarm() {
+    stopSound();
+    document.getElementById('ringOverlay').classList.remove('show');
+    ringingAlarm = null;
+  }
+
+  function snoozeAlarm() {
+    stopSound();
+    const alarm = ringingAlarm;
+    document.getElementById('ringOverlay').classList.remove('show');
+    ringingAlarm = null;
+
+    const snoozeTime = new Date();
+    snoozeTime.setMinutes(snoozeTime.getMinutes() + alarm.snoozeMinutes);
+    snoozeTime.setSeconds(0);
+    const hh = String(snoozeTime.getHours()).padStart(2, '0');
+    const mm = String(snoozeTime.getMinutes()).padStart(2, '0');
+
+    // create a temporary one-time snooze alarm
+    alarms.push({
+      id: nextId++,
+      time: `${hh}:${mm}`,
+      label: alarm.label + ' (Snoozed)',
+      snoozeMinutes: alarm.snoozeMinutes,
+      repeatDays: [],
+      enabled: true
+    });
+    renderAlarms();
+  }
+
+  // ---- Init with a sample alarm ----
+  alarms.push({ id: nextId++, time: '07:00', label: 'Wake up', snoozeMinutes: 5, repeatDays: [1,2,3,4,5], enabled: true });
+  renderAlarms();
+</script>
+
+</body>
+</html>
