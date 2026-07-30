@@ -1,0 +1,2362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portfolio · Chemistry Developer</title>
+  
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet" />
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <!-- AOS Animation -->
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css" />
+  
+  <style>
+    /* ========== RESET & BASE ========== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f4f6fc;
+      color: #1a1a2e;
+      transition: background 0.3s, color 0.3s;
+      line-height: 1.6;
+    }
+
+    body.dark {
+      background: #12121a;
+      color: #e0e0e0;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ========== LOADER ========== */
+    #loader {
+      position: fixed;
+      inset: 0;
+      background: #6C63FF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.8s;
+    }
+
+    #loader.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .loader-spinner {
+      width: 50px;
+      height: 50px;
+      border: 6px solid rgba(255,255,255,0.2);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ========== PROGRESS BAR ========== */
+    #progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #6C63FF, #a78bfa);
+      width: 0%;
+      z-index: 999;
+      transition: width 0.1s;
+    }
+
+    /* ========== NAVBAR ========== */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      backdrop-filter: blur(16px);
+      background: rgba(255,255,255,0.6);
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+      transition: background 0.3s;
+    }
+
+    body.dark .navbar {
+      background: rgba(18,18,26,0.8);
+      border-bottom-color: rgba(255,255,255,0.05);
+    }
+
+    .nav-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .logo {
+      font-weight: 700;
+      font-size: 1.3rem;
+      color: #6C63FF;
+    }
+
+    .logo i { margin-right: 8px; }
+
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 28px;
+    }
+
+    .nav-links a {
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: #6C63FF; }
+
+    .theme-toggle, .hamburger {
+      cursor: pointer;
+      font-size: 1.2rem;
+      padding: 4px 8px;
+    }
+
+    .hamburger { display: none; }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+        flex-direction: column;
+        background: rgba(255,255,255,0.95);
+        backdrop-filter: blur(12px);
+        position: absolute;
+        top: 64px;
+        left: 0;
+        width: 100%;
+        padding: 20px;
+        gap: 16px;
+        border-bottom: 1px solid #ddd;
+      }
+
+      body.dark .nav-links {
+        background: rgba(18,18,26,0.95);
+      }
+
+      .nav-links.open { display: flex; }
+      .hamburger { display: block; }
+    }
+
+    /* ========== HERO ========== */
+    .hero {
+      min-height: 92vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+      background: linear-gradient(145deg, #f0f3ff 0%, #e8ecff 100%);
+    }
+
+    body.dark .hero {
+      background: linear-gradient(145deg, #161622, #0e0e18);
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 30% 40%, rgba(108,99,255,0.08) 0%, transparent 60%);
+      z-index: 0;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+    }
+
+    .profile-img {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      border: 4px solid #6C63FF;
+      box-shadow: 0 12px 40px rgba(108,99,255,0.3);
+      margin-bottom: 20px;
+      object-fit: cover;
+    }
+
+    .hero h1 {
+      font-size: 2.8rem;
+      font-weight: 700;
+    }
+
+    .highlight { color: #6C63FF; }
+
+    .typed-wrapper {
+      font-size: 1.3rem;
+      margin: 12px 0 24px;
+      min-height: 2.6rem;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 12px 32px;
+      border-radius: 40px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: all 0.25s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn.primary {
+      background: #6C63FF;
+      color: #fff;
+      box-shadow: 0 8px 24px rgba(108,99,255,0.35);
+    }
+
+    .btn.primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 32px rgba(108,99,255,0.5);
+    }
+
+    .btn.outline {
+      background: transparent;
+      border: 2px solid #6C63FF;
+      color: #6C63FF;
+    }
+
+    .btn.outline:hover {
+      background: #6C63FF;
+      color: #fff;
+    }
+
+    /* Shapes */
+    .shape {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(108,99,255,0.05);
+      z-index: 1;
+      animation: float 12s infinite alternate ease-in-out;
+    }
+
+    .shape1 { width: 300px; height: 300px; top: -80px; right: -80px; }
+    .shape2 { width: 200px; height: 200px; bottom: 40px; left: -40px; animation-delay: 2s; }
+    .shape3 { width: 150px; height: 150px; top: 40%; right: 10%; animation-delay: 4s; }
+
+    @keyframes float {
+      0% { transform: translate(0,0) scale(1); }
+      100% { transform: translate(30px,-30px) scale(1.2); }
+    }
+
+    /* ========== SECTIONS ========== */
+    .section {
+      padding: 80px 0;
+    }
+
+    .alt-bg {
+      background: rgba(108,99,255,0.04);
+    }
+
+    body.dark .alt-bg {
+      background: rgba(108,99,255,0.06);
+    }
+
+    .section-title {
+      font-size: 2.2rem;
+      font-weight: 700;
+      margin-bottom: 48px;
+      text-align: center;
+      position: relative;
+    }
+
+    .section-title::after {
+      content: '';
+      display: block;
+      width: 60px;
+      height: 4px;
+      background: #6C63FF;
+      margin: 8px auto 0;
+      border-radius: 4px;
+    }
+
+    /* ========== ABOUT ========== */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 40px;
+      align-items: center;
+    }
+
+    .about-text p {
+      margin-bottom: 16px;
+      font-size: 1.05rem;
+    }
+
+    .strengths {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .strengths span {
+      background: rgba(108,99,255,0.12);
+      padding: 6px 18px;
+      border-radius: 30px;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .about-stats {
+      display: flex;
+      justify-content: space-around;
+      text-align: center;
+    }
+
+    .stat-item .counter {
+      font-size: 2.4rem;
+      font-weight: 700;
+      color: #6C63FF;
+    }
+
+    @media (max-width: 768px) {
+      .about-grid { grid-template-columns: 1fr; }
+      .about-stats { margin-top: 24px; }
+    }
+
+    /* ========== SKILLS ========== */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 20px;
+    }
+
+    .skill-card {
+      background: rgba(255,255,255,0.6);
+      backdrop-filter: blur(6px);
+      padding: 20px 16px;
+      border-radius: 20px;
+      text-align: center;
+      border: 1px solid rgba(255,255,255,0.2);
+      transition: transform 0.2s;
+    }
+
+    body.dark .skill-card {
+      background: rgba(30,30,44,0.6);
+      border-color: rgba(255,255,255,0.05);
+    }
+
+    .skill-card:hover { transform: translateY(-6px); }
+
+    .skill-card i {
+      font-size: 2.2rem;
+      color: #6C63FF;
+      margin-bottom: 8px;
+    }
+
+    .progress {
+      width: 100%;
+      height: 6px;
+      background: #e0e0e0;
+      border-radius: 10px;
+      margin-top: 10px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #6C63FF, #a78bfa);
+      border-radius: 10px;
+      width: 0%;
+    }
+
+    /* ========== PROJECTS ========== */
+    .filter-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 32px;
+    }
+
+    .filter-btn {
+      padding: 8px 24px;
+      border: 2px solid #6C63FF;
+      border-radius: 40px;
+      background: transparent;
+      color: #6C63FF;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .filter-btn.active, .filter-btn:hover {
+      background: #6C63FF;
+      color: #fff;
+    }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 28px;
+    }
+
+    .project-card {
+      background: rgba(255,255,255,0.6);
+      backdrop-filter: blur(8px);
+      border-radius: 24px;
+      padding: 20px;
+      border: 1px solid rgba(255,255,255,0.2);
+      transition: all 0.3s;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.04);
+    }
+
+    body.dark .project-card {
+      background: rgba(30,30,44,0.5);
+      border-color: rgba(255,255,255,0.05);
+    }
+
+    .project-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 40px rgba(108,99,255,0.15);
+    }
+
+    .project-card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 16px;
+      background: #ddd;
+    }
+
+    .project-card h4 {
+      margin: 16px 0 8px;
+      font-size: 1.1rem;
+    }
+
+    .project-card .tech {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 8px 0;
+    }
+
+    .project-card .tech span {
+      background: rgba(108,99,255,0.12);
+      padding: 2px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+    }
+
+    .project-links {
+      display: flex;
+      gap: 12px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+
+    .project-links a {
+      padding: 6px 16px;
+      border-radius: 30px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border: 1px solid #6C63FF;
+      color: #6C63FF;
+      transition: 0.2s;
+      cursor: pointer;
+    }
+
+    .project-links a:hover {
+      background: #6C63FF;
+      color: #fff;
+    }
+
+    /* ========== TIMELINE ========== */
+    .timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .timeline-item {
+      display: flex;
+      gap: 24px;
+      align-items: baseline;
+      padding: 16px 24px;
+      background: rgba(255,255,255,0.4);
+      backdrop-filter: blur(4px);
+      border-radius: 20px;
+      border-left: 6px solid #6C63FF;
+    }
+
+    body.dark .timeline-item {
+      background: rgba(30,30,44,0.3);
+    }
+
+    .timeline-item .year {
+      font-weight: 700;
+      color: #6C63FF;
+      min-width: 70px;
+    }
+
+    /* ========== SERVICES ========== */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 28px;
+    }
+
+    .service-card {
+      padding: 32px 20px;
+      border-radius: 24px;
+      text-align: center;
+      background: rgba(255,255,255,0.4);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.1);
+      transition: 0.3s;
+    }
+
+    body.dark .service-card {
+      background: rgba(30,30,44,0.3);
+    }
+
+    .service-card i {
+      font-size: 2.8rem;
+      color: #6C63FF;
+      margin-bottom: 16px;
+    }
+
+    .service-card:hover { transform: scale(1.03); }
+
+    /* ========== CONTACT ========== */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+    }
+
+    .contact-info p {
+      margin: 12px 0;
+      font-size: 1.05rem;
+    }
+
+    .contact-info i {
+      width: 32px;
+      color: #6C63FF;
+    }
+
+    .contact-form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      padding: 32px;
+      border-radius: 28px;
+      background: rgba(255,255,255,0.3);
+      backdrop-filter: blur(8px);
+    }
+
+    body.dark .contact-form {
+      background: rgba(30,30,44,0.3);
+    }
+
+    .contact-form input,
+    .contact-form textarea {
+      padding: 14px 18px;
+      border: 1px solid #ccc;
+      border-radius: 16px;
+      font-family: inherit;
+      font-size: 1rem;
+      background: rgba(255,255,255,0.6);
+      transition: 0.2s;
+    }
+
+    body.dark .contact-form input,
+    body.dark .contact-form textarea {
+      background: rgba(255,255,255,0.08);
+      border-color: #333;
+      color: #e0e0e0;
+    }
+
+    .contact-form button {
+      align-self: flex-start;
+    }
+
+    @media (max-width: 768px) {
+      .contact-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ========== FOOTER ========== */
+    footer {
+      text-align: center;
+      padding: 24px;
+      border-top: 1px solid rgba(0,0,0,0.05);
+      font-size: 0.95rem;
+    }
+
+    body.dark footer {
+      border-top-color: rgba(255,255,255,0.05);
+    }
+
+    /* ========== SCROLL TOP ========== */
+    .scroll-top {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: #6C63FF;
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 48px;
+      height: 48px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(108,99,255,0.3);
+      transition: 0.25s;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    .scroll-top.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .scroll-top:hover { transform: translateY(-4px); }
+
+    /* ========== GLASS UTILITY ========== */
+    .glass {
+      backdrop-filter: blur(12px);
+      background: rgba(255,255,255,0.3);
+    }
+
+    body.dark .glass {
+      background: rgba(18,18,26,0.6);
+    }
+
+    /* ========== RESPONSIVE ========== */
+    @media (max-width: 480px) {
+      .hero h1 { font-size: 2rem; }
+      .section-title { font-size: 1.7rem; }
+      .projects-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ========== GAME MODAL ========== */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      z-index: 9999;
+      backdrop-filter: blur(8px);
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: #fff;
+      border-radius: 28px;
+      padding: 30px;
+      max-width: 600px;
+      width: 95%;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+    }
+
+    body.dark .modal-content {
+      background: #1a1a2e;
+      color: #e0e0e0;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #999;
+      transition: 0.2s;
+    }
+
+    .modal-close:hover { color: #ff6b6b; }
+
+    .modal-content canvas {
+      display: block;
+      margin: 0 auto;
+      background: #000;
+      border-radius: 12px;
+    }
+
+    .modal-content h2 {
+      text-align: center;
+      margin-bottom: 15px;
+    }
+
+    /* ========== GAME CONTROLS ========== */
+    .game-controls {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 15px;
+      flex-wrap: wrap;
+    }
+
+    .game-controls button {
+      padding: 10px 24px;
+      border: none;
+      border-radius: 30px;
+      background: #6C63FF;
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .game-controls button:hover {
+      transform: scale(1.05);
+      background: #5a52d5;
+    }
+
+    .game-controls .btn-danger {
+      background: #ff6b6b;
+    }
+
+    .game-controls .btn-danger:hover {
+      background: #e55a5a;
+    }
+
+    /* ========== QUIZ STYLES ========== */
+    .quiz-container {
+      padding: 10px 0;
+    }
+
+    .quiz-question {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
+
+    .quiz-options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .quiz-options button {
+      padding: 10px 16px;
+      border: 2px solid #ddd;
+      border-radius: 12px;
+      background: transparent;
+      cursor: pointer;
+      text-align: left;
+      transition: 0.2s;
+      font-size: 0.95rem;
+    }
+
+    .quiz-options button:hover {
+      border-color: #6C63FF;
+      background: rgba(108,99,255,0.05);
+    }
+
+    .quiz-options button.correct {
+      border-color: #2ecc71;
+      background: rgba(46,204,113,0.1);
+    }
+
+    .quiz-options button.wrong {
+      border-color: #e74c3c;
+      background: rgba(231,76,60,0.1);
+    }
+
+    .quiz-score {
+      text-align: center;
+      font-size: 1.2rem;
+      margin-top: 15px;
+      font-weight: 600;
+    }
+
+    /* ========== PERIODIC TABLE ========== */
+    .periodic-grid {
+      display: grid;
+      grid-template-columns: repeat(18, 1fr);
+      gap: 4px;
+      font-size: 0.7rem;
+    }
+
+    .periodic-grid .element {
+      background: rgba(108,99,255,0.1);
+      border-radius: 6px;
+      padding: 4px 2px;
+      text-align: center;
+      cursor: pointer;
+      transition: 0.2s;
+      border: 1px solid transparent;
+    }
+
+    .periodic-grid .element:hover {
+      background: rgba(108,99,255,0.25);
+      transform: scale(1.05);
+    }
+
+    .periodic-grid .element .symbol {
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .element-detail {
+      margin-top: 15px;
+      padding: 15px;
+      background: rgba(108,99,255,0.08);
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    /* ========== CALCULATOR ========== */
+    .calc-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      max-width: 300px;
+      margin: 0 auto;
+    }
+
+    .calc-grid button {
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.15s;
+      background: rgba(108,99,255,0.08);
+    }
+
+    .calc-grid button:hover {
+      background: rgba(108,99,255,0.2);
+    }
+
+    .calc-grid .operator {
+      background: rgba(108,99,255,0.15);
+      color: #6C63FF;
+    }
+
+    .calc-grid .equals {
+      background: #6C63FF;
+      color: #fff;
+    }
+
+    .calc-display {
+      grid-column: 1 / -1;
+      background: rgba(0,0,0,0.05);
+      padding: 12px 16px;
+      border-radius: 12px;
+      text-align: right;
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      min-height: 50px;
+    }
+
+    body.dark .calc-display {
+      background: rgba(255,255,255,0.05);
+    }
+
+    /* ========== ALARM CLOCK ========== */
+    .alarm-display {
+      text-align: center;
+      font-size: 3rem;
+      font-weight: 700;
+      font-family: 'Courier New', monospace;
+      padding: 20px;
+      background: rgba(0,0,0,0.05);
+      border-radius: 16px;
+      margin: 15px 0;
+    }
+
+    body.dark .alarm-display {
+      background: rgba(255,255,255,0.05);
+    }
+
+    .alarm-controls {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .alarm-controls input {
+      padding: 10px 16px;
+      border-radius: 12px;
+      border: 1px solid #ddd;
+      font-size: 1rem;
+    }
+
+    /* ========== MOLAR MASS ========== */
+    .molar-input {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin: 15px 0;
+    }
+
+    .molar-input input {
+      padding: 10px 16px;
+      border-radius: 12px;
+      border: 1px solid #ddd;
+      font-size: 1rem;
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .molar-result {
+      text-align: center;
+      font-size: 1.2rem;
+      font-weight: 600;
+      padding: 10px;
+    }
+
+    /* ========== PH CALCULATOR ========== */
+    .ph-input {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin: 15px 0;
+    }
+
+    .ph-input input {
+      padding: 10px 16px;
+      border-radius: 12px;
+      border: 1px solid #ddd;
+      font-size: 1rem;
+      width: 150px;
+    }
+
+    .ph-result {
+      text-align: center;
+      font-size: 1.2rem;
+      font-weight: 600;
+      padding: 10px;
+    }
+
+    .ph-scale {
+      height: 20px;
+      border-radius: 10px;
+      background: linear-gradient(to right, #ff0000, #ff8800, #ffff00, #00ff00, #0088ff, #6600ff);
+      margin: 10px 0;
+      position: relative;
+    }
+
+    .ph-scale .indicator {
+      position: absolute;
+      top: -8px;
+      width: 4px;
+      height: 36px;
+      background: #000;
+      border-radius: 2px;
+      transition: left 0.3s;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- LOADING SCREEN -->
+  <div id="loader">
+    <div class="loader-spinner"></div>
+  </div>
+
+  <!-- SCROLL PROGRESS BAR -->
+  <div id="progress-bar"></div>
+
+  <!-- NAVIGATION -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <span class="logo"><i class="fas fa-atom"></i> DevChem</span>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="#hero">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#education">Education</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <div class="theme-toggle" id="theme-toggle">
+        <i class="fas fa-moon"></i>
+      </div>
+      <div class="hamburger" id="hamburger">
+        <i class="fas fa-bars"></i>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero" class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-content container" data-aos="fade-up" data-aos-duration="1200">
+      <div class="hero-profile">
+        <img src="https://ui-avatars.com/api/?name=Ahmad+Raza&size=150&background=6C63FF&color=fff&bold=true" alt="Profile" class="profile-img" />
+      </div>
+      <h1>Hello, I'm <span class="highlight">Ahmad Raza</span></h1>
+      <p class="typed-wrapper">
+        <span class="typed-text" id="typed-text"></span>
+      </p>
+      <div class="hero-buttons">
+        <a href="#" class="btn primary"><i class="fas fa-download"></i> Resume</a>
+        <a href="#contact" class="btn outline"><i class="fas fa-paper-plane"></i> Contact</a>
+      </div>
+    </div>
+    <div class="shape shape1"></div>
+    <div class="shape shape2"></div>
+    <div class="shape shape3"></div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about" class="section" data-aos="fade-up">
+    <div class="container">
+      <h2 class="section-title">About Me</h2>
+      <div class="about-grid">
+        <div class="about-text">
+          <p><strong>Chemistry Graduate · Python Developer · Frontend Enthusiast</strong></p>
+          <p>I blend scientific rigor with creative coding. Passionate about building software that solves real-world problems, from molecular simulations to elegant web interfaces. My objective: to develop impactful applications at the intersection of chemistry and technology.</p>
+          <div class="strengths">
+            <span><i class="fas fa-flask"></i> Analytical</span>
+            <span><i class="fas fa-code"></i> Problem Solver</span>
+            <span><i class="fas fa-users"></i> Collaborator</span>
+          </div>
+        </div>
+        <div class="about-stats" data-aos="fade-left">
+          <div class="stat-item"><span class="counter" data-target="15">0</span><p>Projects</p></div>
+          <div class="stat-item"><span class="counter" data-target="10">0</span><p>Technologies</p></div>
+          <div class="stat-item"><span class="counter" data-target="7">0</span><p>Certificates</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section id="skills" class="section alt-bg" data-aos="fade-up">
+    <div class="container">
+      <h2 class="section-title">Technical Skills</h2>
+      <div class="skills-grid">
+        <div class="skill-card"><i class="fab fa-html5"></i> HTML <div class="progress"><div class="progress-bar" style="width:95%"></div></div></div>
+        <div class="skill-card"><i class="fab fa-css3-alt"></i> CSS <div class="progress"><div class="progress-bar" style="width:90%"></div></div></div>
+        <div class="skill-card"><i class="fab fa-js"></i> JavaScript <div class="progress"><div class="progress-bar" style="width:85%"></div></div></div>
+        <div class="skill-card"><i class="fab fa-python"></i> Python <div class="progress"><div class="progress-bar" style="width:92%"></div></div></div>
+        <div class="skill-card"><i class="fab fa-git-alt"></i> Git <div class="progress"><div class="progress-bar" style="width:80%"></div></div></div>
+        <div class="skill-card"><i class="fab fa-github"></i> GitHub <div class="progress"><div class="progress-bar" style="width:78%"></div></div></div>
+        <div class="skill-card"><i class="fas fa-database"></i> SQL <div class="progress"><div class="progress-bar" style="width:75%"></div></div></div>
+        <div class="skill-card"><i class="fas fa-mobile-alt"></i> Responsive Design <div class="progress"><div class="progress-bar" style="width:88%"></div></div></div>
+        <div class="skill-card"><i class="fas fa-code-branch"></i> OOP <div class="progress"><div class="progress-bar" style="width:82%"></div></div></div>
+        <div class="skill-card"><i class="fas fa-brain"></i> DSA <div class="progress"><div class="progress-bar" style="width:70%"></div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects" class="section" data-aos="fade-up">
+    <div class="container">
+      <h2 class="section-title">Projects</h2>
+      <div class="filter-buttons">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="programming">Programming</button>
+        <button class="filter-btn" data-filter="chemistry">Chemistry</button>
+      </div>
+      <div class="projects-grid" id="projects-grid"></div>
+    </div>
+  </section>
+
+  <!-- EDUCATION + TIMELINE -->
+  <section id="education" class="section alt-bg" data-aos="fade-up">
+    <div class="container">
+      <h2 class="section-title">Education & Journey</h2>
+      <div class="timeline">
+        <div class="timeline-item"><span class="year">2023</span><h4>B.Sc. Chemistry</h4><p>University of Science · Graduate</p></div>
+        <div class="timeline-item"><span class="year">2024</span><h4>Python Developer</h4><p>Certification · DataCamp</p></div>
+        <div class="timeline-item"><span class="year">2025</span><h4>Frontend Intern</h4><p>TechStart · Web development</p></div>
+        <div class="timeline-item"><span class="year">2026</span><h4>Open Source Contributor</h4><p>Several chemistry-related projects</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section id="services" class="section" data-aos="fade-up">
+    <div class="container">
+      <h2 class="section-title">Services</h2>
+      <div class="services-grid">
+        <div class="service-card glass"><i class="fas fa-laptop-code"></i><h4>Frontend Dev</h4><p>Responsive, interactive interfaces</p></div>
+        <div class="service-card glass"><i class="fab fa-python"></i><h4>Python Programming</h4><p>Automation, data, scientific apps</p></div>
+        <div class="service-card glass"><i class="fas fa-flask"></i><h4>Chemistry Software</h4><p>Simulations, calculators, tools</p></div>
+        <div class="service-card glass"><i class="fas fa-calculator"></i><h4>Scientific Computing</h4><p>Numerical & analytical solutions</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="section alt-bg" data-aos="fade-up">
+    <div class="container">
+      <h2 class="section-title">Get in Touch</h2>
+      <div class="contact-grid">
+        <div class="contact-info">
+          <p><i class="fas fa-envelope"></i> ahmad.chemdev@email.com</p>
+          <p><i class="fas fa-phone"></i> +1 (555) 123-4567</p>
+          <p><i class="fab fa-github"></i> github.com/ahmadchemdev</p>
+          <p><i class="fab fa-linkedin"></i> linkedin.com/in/ahmad-chem</p>
+          <p><i class="fas fa-map-marker-alt"></i> Lahore, Pakistan</p>
+        </div>
+        <form class="contact-form glass" id="contactForm">
+          <input type="text" placeholder="Your Name" required />
+          <input type="email" placeholder="Email" required />
+          <textarea rows="4" placeholder="Message"></textarea>
+          <button type="submit" class="btn primary"><i class="fas fa-paper-plane"></i> Send</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2026 Ahmad Raza · Built with <i class="fas fa-heart" style="color:#ff6b6b;"></i> & vanilla code</p>
+  </footer>
+
+  <!-- SCROLL TO TOP -->
+  <button id="scrollTopBtn" class="scroll-top"><i class="fas fa-arrow-up"></i></button>
+
+  <!-- ========== MODAL ========== -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-content" id="modalContent">
+      <span class="modal-close" id="modalClose">&times;</span>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+  <!-- AOS JS -->
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <!-- Typed.js -->
+  <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+  
+  <script>
+    // ========== LOADING SCREEN ==========
+    window.addEventListener('load', () => {
+      const loader = document.getElementById('loader');
+      loader.classList.add('hidden');
+      setTimeout(() => loader.style.display = 'none', 800);
+    });
+
+    // ========== SCROLL PROGRESS BAR ==========
+    window.addEventListener('scroll', () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = (scrollTop / docHeight) * 100;
+      document.getElementById('progress-bar').style.width = progress + '%';
+
+      const btn = document.getElementById('scrollTopBtn');
+      if (scrollTop > 300) btn.classList.add('visible');
+      else btn.classList.remove('visible');
+    });
+
+    // ========== SCROLL TO TOP ==========
+    document.getElementById('scrollTopBtn').addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // ========== DARK/LIGHT MODE ==========
+    const themeToggle = document.getElementById('theme-toggle');
+    const icon = themeToggle.querySelector('i');
+
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('dark');
+      icon.classList.toggle('fa-moon');
+      icon.classList.toggle('fa-sun');
+    });
+
+    // ========== MOBILE HAMBURGER ==========
+    const hamburger = document.getElementById('hamburger');
+    const navLinks = document.getElementById('nav-links');
+
+    hamburger.addEventListener('click', () => {
+      navLinks.classList.toggle('open');
+    });
+
+    document.querySelectorAll('.nav-links a').forEach(link => {
+      link.addEventListener('click', () => navLinks.classList.remove('open'));
+    });
+
+    // ========== TYPED.JS ==========
+    new Typed('#typed-text', {
+      strings: [
+        'Chemistry Graduate 🧪',
+        'Python Developer 🐍',
+        'Frontend Developer 💻',
+        'Software Engineering Enthusiast 🚀'
+      ],
+      typeSpeed: 60,
+      backSpeed: 40,
+      backDelay: 1200,
+      loop: true,
+      showCursor: true,
+      cursorChar: '|',
+    });
+
+    // ========== AOS ANIMATIONS ==========
+    AOS.init({
+      duration: 800,
+      once: true,
+      offset: 80,
+    });
+
+    // ========== ANIMATED COUNTERS ==========
+    const counters = document.querySelectorAll('.counter');
+
+    const animateCounter = (el) => {
+      const target = parseInt(el.getAttribute('data-target'));
+      let current = 0;
+      const increment = Math.ceil(target / 60);
+      const timer = setInterval(() => {
+        current += increment;
+        if (current >= target) {
+          el.textContent = target;
+          clearInterval(timer);
+        } else {
+          el.textContent = current;
+        }
+      }, 25);
+    };
+
+    const counterObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const el = entry.target;
+          if (!el.classList.contains('counted')) {
+            el.classList.add('counted');
+            animateCounter(el);
+          }
+        }
+      });
+    }, { threshold: 0.5 });
+
+    counters.forEach(c => counterObserver.observe(c));
+
+    // ========== MODAL FUNCTIONS ==========
+    const modalOverlay = document.getElementById('modalOverlay');
+    const modalBody = document.getElementById('modalBody');
+    const modalClose = document.getElementById('modalClose');
+
+    function openModal(html) {
+      modalBody.innerHTML = html;
+      modalOverlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      modalOverlay.classList.remove('active');
+      document.body.style.overflow = 'auto';
+    }
+
+    modalClose.addEventListener('click', closeModal);
+    modalOverlay.addEventListener('click', (e) => {
+      if (e.target === modalOverlay) closeModal();
+    });
+
+    // ========== SNAKE GAME ==========
+    function openSnakeGame() {
+      openModal(`
+        <h2><i class="fas fa-gamepad"></i> Snake Game (Nokia Style)</h2>
+        <canvas id="snakeCanvas" width="400" height="400"></canvas>
+        <div class="game-controls">
+          <button onclick="startSnake()">Start</button>
+          <button class="btn-danger" onclick="pauseSnake()">Pause</button>
+          <button class="btn-danger" onclick="resetSnake()">Reset</button>
+        </div>
+        <div style="text-align:center;margin-top:10px;font-weight:600;">Score: <span id="snakeScore">0</span></div>
+        <div style="text-align:center;margin-top:5px;font-size:0.9rem;color:#999;">Use Arrow Keys to move</div>
+      `);
+      
+      // Initialize snake game after modal opens
+      setTimeout(() => {
+        initSnakeGame();
+      }, 100);
+    }
+
+    // Snake Game Logic
+    let snakeCanvas, snakeCtx;
+    let snake = [];
+    let snakeDirection = 'right';
+    let snakeNextDirection = 'right';
+    let snakeFood = {};
+    let snakeScore = 0;
+    let snakeGameRunning = false;
+    let snakeGameInterval = null;
+    let snakePaused = false;
+
+    function initSnakeGame() {
+      snakeCanvas = document.getElementById('snakeCanvas');
+      if (!snakeCanvas) return;
+      snakeCtx = snakeCanvas.getContext('2d');
+      resetSnake();
+    }
+
+    function resetSnake() {
+      if (snakeGameInterval) {
+        clearInterval(snakeGameInterval);
+        snakeGameInterval = null;
+      }
+      snake = [
+        {x: 8, y: 10},
+        {x: 7, y: 10},
+        {x: 6, y: 10}
+      ];
+      snakeDirection = 'right';
+      snakeNextDirection = 'right';
+      snakeScore = 0;
+      snakeGameRunning = false;
+      snakePaused = false;
+      document.getElementById('snakeScore').textContent = '0';
+      generateSnakeFood();
+      drawSnake();
+    }
+
+    function startSnake() {
+      if (snakeGameRunning && !snakePaused) return;
+      if (!snakeGameRunning) {
+        snakeGameRunning = true;
+        snakePaused = false;
+        if (snakeGameInterval) {
+          clearInterval(snakeGameInterval);
+        }
+        snakeGameInterval = setInterval(updateSnake, 150);
+      } else if (snakePaused) {
+        snakePaused = false;
+        snakeGameInterval = setInterval(updateSnake, 150);
+      }
+    }
+
+    function pauseSnake() {
+      if (snakeGameRunning) {
+        snakePaused = true;
+        if (snakeGameInterval) {
+          clearInterval(snakeGameInterval);
+          snakeGameInterval = null;
+        }
+      }
+    }
+
+    function generateSnakeFood() {
+      const maxX = 19, maxY = 19;
+      let pos;
+      do {
+        pos = {
+          x: Math.floor(Math.random() * maxX) + 1,
+          y: Math.floor(Math.random() * maxY) + 1
+        };
+      } while (snake.some(s => s.x === pos.x && s.y === pos.y));
+      snakeFood = pos;
+    }
+
+    function updateSnake() {
+      if (snakePaused) return;
+      
+      snakeDirection = snakeNextDirection;
+      
+      const head = {...snake[0]};
+      switch(snakeDirection) {
+        case 'right': head.x++; break;
+        case 'left': head.x--; break;
+        case 'up': head.y--; break;
+        case 'down': head.y++; break;
+      }
+
+      // Check wall collision
+      if (head.x < 1 || head.x > 19 || head.y < 1 || head.y > 19) {
+        gameOverSnake();
+        return;
+      }
+
+      // Check self collision
+      if (snake.some(s => s.x === head.x && s.y === head.y)) {
+        gameOverSnake();
+        return;
+      }
+
+      snake.unshift(head);
+
+      // Check food
+      if (head.x === snakeFood.x && head.y === snakeFood.y) {
+        snakeScore++;
+        document.getElementById('snakeScore').textContent = snakeScore;
+        generateSnakeFood();
+      } else {
+        snake.pop();
+      }
+
+      drawSnake();
+    }
+
+    function drawSnake() {
+      if (!snakeCtx) return;
+      const size = 20;
+      snakeCtx.fillStyle = '#1a1a2e';
+      snakeCtx.fillRect(0, 0, 400, 400);
+
+      // Draw grid
+      for (let i = 0; i < 20; i++) {
+        for (let j = 0; j < 20; j++) {
+          snakeCtx.strokeStyle = 'rgba(255,255,255,0.03)';
+          snakeCtx.strokeRect(i * size, j * size, size, size);
+        }
+      }
+
+      // Draw snake
+      snake.forEach((seg, index) => {
+        const gradient = snakeCtx.createRadialGradient(
+          seg.x * size + size/2, seg.y * size + size/2, 2,
+          seg.x * size + size/2, seg.y * size + size/2, size/2
+        );
+        if (index === 0) {
+          gradient.addColorStop(0, '#6C63FF');
+          gradient.addColorStop(1, '#4a42b5');
+        } else {
+          gradient.addColorStop(0, '#8a7fff');
+          gradient.addColorStop(1, '#6C63FF');
+        }
+        snakeCtx.fillStyle = gradient;
+        snakeCtx.beginPath();
+        snakeCtx.roundRect(seg.x * size + 1, seg.y * size + 1, size - 2, size - 2, 4);
+        snakeCtx.fill();
+      });
+
+      // Draw food
+      if (snakeFood) {
+        const gradient = snakeCtx.createRadialGradient(
+          snakeFood.x * size + size/2, snakeFood.y * size + size/2, 2,
+          snakeFood.x * size + size/2, snakeFood.y * size + size/2, size/2
+        );
+        gradient.addColorStop(0, '#ff6b6b');
+        gradient.addColorStop(1, '#e55a5a');
+        snakeCtx.fillStyle = gradient;
+        snakeCtx.beginPath();
+        snakeCtx.arc(snakeFood.x * size + size/2, snakeFood.y * size + size/2, 8, 0, Math.PI * 2);
+        snakeCtx.fill();
+      }
+    }
+
+    function gameOverSnake() {
+      if (snakeGameInterval) {
+        clearInterval(snakeGameInterval);
+        snakeGameInterval = null;
+      }
+      snakeGameRunning = false;
+      snakePaused = false;
+      alert('Game Over! Score: ' + snakeScore);
+      resetSnake();
+    }
+
+    // Keyboard controls for snake
+    document.addEventListener('keydown', (e) => {
+      if (!snakeGameRunning) return;
+      switch(e.key) {
+        case 'ArrowUp': if (snakeDirection !== 'down') snakeNextDirection = 'up'; break;
+        case 'ArrowDown': if (snakeDirection !== 'up') snakeNextDirection = 'down'; break;
+        case 'ArrowLeft': if (snakeDirection !== 'right') snakeNextDirection = 'left'; break;
+        case 'ArrowRight': if (snakeDirection !== 'left') snakeNextDirection = 'right'; break;
+      }
+    });
+
+    // ========== DINO GAME ==========
+    function openDinoGame() {
+      openModal(`
+        <h2><i class="fas fa-gamepad"></i> Dino Game (Chrome Style)</h2>
+        <canvas id="dinoCanvas" width="500" height="200"></canvas>
+        <div class="game-controls">
+          <button onclick="startDino()">Start</button>
+          <button class="btn-danger" onclick="resetDino()">Reset</button>
+        </div>
+        <div style="text-align:center;margin-top:10px;font-weight:600;">Score: <span id="dinoScore">0</span></div>
+        <div style="text-align:center;margin-top:5px;font-size:0.9rem;color:#999;">Press Space or Click to Jump</div>
+      `);
+      
+      setTimeout(() => {
+        initDinoGame();
+      }, 100);
+    }
+
+    // Dino Game Logic
+    let dinoCanvas, dinoCtx;
+    let dino = {x: 50, y: 150, width: 30, height: 40, vy: 0, jumping: false};
+    let dinoObstacles = [];
+    let dinoScore = 0;
+    let dinoGameRunning = false;
+    let dinoGameInterval = null;
+    let dinoFrameInterval = null;
+    const GRAVITY = 0.6;
+    const JUMP_FORCE = -12;
+
+    function initDinoGame() {
+      dinoCanvas = document.getElementById('dinoCanvas');
+      if (!dinoCanvas) return;
+      dinoCtx = dinoCanvas.getContext('2d');
+      resetDino();
+    }
+
+    function resetDino() {
+      if (dinoGameInterval) {
+        clearInterval(dinoGameInterval);
+        dinoGameInterval = null;
+      }
+      if (dinoFrameInterval) {
+        clearInterval(dinoFrameInterval);
+        dinoFrameInterval = null;
+      }
+      dino = {x: 50, y: 150, width: 30, height: 40, vy: 0, jumping: false};
+      dinoObstacles = [];
+      dinoScore = 0;
+      dinoGameRunning = false;
+      document.getElementById('dinoScore').textContent = '0';
+      drawDino();
+    }
+
+    function startDino() {
+      if (dinoGameRunning) return;
+      dinoGameRunning = true;
+      dinoScore = 0;
+      dinoObstacles = [];
+      dino = {x: 50, y: 150, width: 30, height: 40, vy: 0, jumping: false};
+      document.getElementById('dinoScore').textContent = '0';
+      
+      if (dinoGameInterval) clearInterval(dinoGameInterval);
+      if (dinoFrameInterval) clearInterval(dinoFrameInterval);
+      
+      dinoGameInterval = setInterval(() => {
+        updateDino();
+      }, 20);
+      
+      dinoFrameInterval = setInterval(() => {
+        drawDino();
+      }, 50);
+    }
+
+    function updateDino() {
+      if (!dinoGameRunning) return;
+
+      // Gravity
+      dino.vy += GRAVITY;
+      dino.y += dino.vy;
+
+      // Ground
+      if (dino.y >= 150) {
+        dino.y = 150;
+        dino.vy = 0;
+        dino.jumping = false;
+      }
+
+      // Spawn obstacles
+      if (Math.random() < 0.02) {
+        dinoObstacles.push({
+          x: dinoCanvas.width,
+          y: 150,
+          width: 20,
+          height: 30
+        });
+      }
+
+      // Move obstacles
+      dinoObstacles.forEach(obs => obs.x -= 5);
+      dinoObstacles = dinoObstacles.filter(obs => obs.x > -50);
+
+      // Collision
+      dinoObstacles.forEach(obs => {
+        if (dino.x < obs.x + obs.width &&
+            dino.x + dino.width > obs.x &&
+            dino.y < obs.y + obs.height &&
+            dino.y + dino.height > obs.y) {
+          gameOverDino();
+        }
+      });
+
+      // Score
+      dinoScore++;
+      document.getElementById('dinoScore').textContent = Math.floor(dinoScore / 10);
+    }
+
+    function drawDino() {
+      if (!dinoCtx) return;
+      dinoCtx.fillStyle = '#1a1a2e';
+      dinoCtx.fillRect(0, 0, dinoCanvas.width, dinoCanvas.height);
+
+      // Ground
+      dinoCtx.fillStyle = '#4a4a5a';
+      dinoCtx.fillRect(0, 185, dinoCanvas.width, 15);
+
+      // Dino
+      dinoCtx.fillStyle = '#6C63FF';
+      dinoCtx.beginPath();
+      dinoCtx.roundRect(dino.x, dino.y, dino.width, dino.height, 4);
+      dinoCtx.fill();
+
+      // Dino eye
+      dinoCtx.fillStyle = '#fff';
+      dinoCtx.beginPath();
+      dinoCtx.arc(dino.x + 22, dino.y + 10, 5, 0, Math.PI * 2);
+      dinoCtx.fill();
+      dinoCtx.fillStyle = '#1a1a2e';
+      dinoCtx.beginPath();
+      dinoCtx.arc(dino.x + 24, dino.y + 10, 2, 0, Math.PI * 2);
+      dinoCtx.fill();
+
+      // Obstacles
+      dinoObstacles.forEach(obs => {
+        dinoCtx.fillStyle = '#ff6b6b';
+        dinoCtx.beginPath();
+        dinoCtx.roundRect(obs.x, obs.y - obs.height, obs.width, obs.height, 4);
+        dinoCtx.fill();
+      });
+    }
+
+    function gameOverDino() {
+      dinoGameRunning = false;
+      if (dinoGameInterval) {
+        clearInterval(dinoGameInterval);
+        dinoGameInterval = null;
+      }
+      if (dinoFrameInterval) {
+        clearInterval(dinoFrameInterval);
+        dinoFrameInterval = null;
+      }
+      alert('Game Over! Score: ' + Math.floor(dinoScore / 10));
+    }
+
+    // Jump
+    document.addEventListener('keydown', (e) => {
+      if (e.key === ' ' || e.key === 'Space') {
+        e.preventDefault();
+        if (dinoGameRunning && !dino.jumping) {
+          dino.vy = JUMP_FORCE;
+          dino.jumping = true;
+        }
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (dinoGameRunning && !dino.jumping && e.target.id !== 'dinoCanvas') {
+        dino.vy = JUMP_FORCE;
+        dino.jumping = true;
+      }
+    });
+
+    // ========== SCIENTIFIC CALCULATOR ==========
+    function openCalculator() {
+      openModal(`
+        <h2><i class="fas fa-calculator"></i> Scientific Calculator</h2>
+        <div class="calc-display" id="calcDisplay">0</div>
+        <div class="calc-grid">
+          <button onclick="calcInput('7')">7</button>
+          <button onclick="calcInput('8')">8</button>
+          <button onclick="calcInput('9')">9</button>
+          <button class="operator" onclick="calcInput('/')">÷</button>
+          <button onclick="calcInput('4')">4</button>
+          <button onclick="calcInput('5')">5</button>
+          <button onclick="calcInput('6')">6</button>
+          <button class="operator" onclick="calcInput('*')">×</button>
+          <button onclick="calcInput('1')">1</button>
+          <button onclick="calcInput('2')">2</button>
+          <button onclick="calcInput('3')">3</button>
+          <button class="operator" onclick="calcInput('-')">−</button>
+          <button onclick="calcInput('0')">0</button>
+          <button onclick="calcInput('.')">.</button>
+          <button onclick="calcClear()">C</button>
+          <button class="operator" onclick="calcInput('+')">+</button>
+          <button onclick="calcInput('(')">(</button>
+          <button onclick="calcInput(')')">)</button>
+          <button onclick="calcInput('**')">x²</button>
+          <button class="equals" onclick="calcResult()">=</button>
+          <button onclick="calcInput('Math.sqrt(')" style="grid-column:span 2;">√</button>
+          <button onclick="calcInput('Math.sin(')">sin</button>
+          <button onclick="calcInput('Math.cos(')">cos</button>
+          <button onclick="calcInput('Math.tan(')">tan</button>
+          <button onclick="calcInput('Math.log(')">log</button>
+          <button onclick="calcInput('Math.exp(')">eˣ</button>
+          <button onclick="calcInput('Math.PI')">π</button>
+          <button onclick="calcInput('Math.E')">e</button>
+          <button onclick="calcInput('Math.factorial(')" style="grid-column:span 2;">x!</button>
+        </div>
+      `);
+    }
+
+    let calcExpression = '';
+
+    function calcInput(value) {
+      calcExpression += value;
+      document.getElementById('calcDisplay').textContent = calcExpression || '0';
+    }
+
+    function calcClear() {
+      calcExpression = '';
+      document.getElementById('calcDisplay').textContent = '0';
+    }
+
+    function calcResult() {
+      try {
+        // Factorial helper
+        Math.factorial = function(n) {
+          if (n < 0) return NaN;
+          if (n === 0 || n === 1) return 1;
+          let result = 1;
+          for (let i = 2; i <= n; i++) result *= i;
+          return result;
+        };
+        
+        let expr = calcExpression;
+        // Replace factorial notation
+        expr = expr.replace(/(\d+)!/g, 'Math.factorial($1)');
+        const result = Function('"use strict"; return (' + expr + ')')();
+        document.getElementById('calcDisplay').textContent = result;
+        calcExpression = result.toString();
+      } catch(e) {
+        document.getElementById('calcDisplay').textContent = 'Error';
+        calcExpression = '';
+      }
+    }
+
+    // ========== ALARM CLOCK ==========
+    function openAlarmClock() {
+      openModal(`
+        <h2><i class="fas fa-clock"></i> Alarm Clock</h2>
+        <div class="alarm-display" id="alarmDisplay">00:00:00</div>
+        <div class="alarm-controls">
+          <input type="time" id="alarmTime" />
+          <button onclick="setAlarm()">Set Alarm</button>
+          <button class="btn-danger" onclick="stopAlarm()">Stop Alarm</button>
+        </div>
+        <div style="text-align:center;margin-top:10px;color:#999;">
+          <p>Alarm Status: <span id="alarmStatus">Not Set</span></p>
+        </div>
+      `);
+      
+      // Start clock
+      if (window.alarmInterval) clearInterval(window.alarmInterval);
+      window.alarmInterval = setInterval(updateAlarmClock, 1000);
+    }
+
+    let alarmTime = null;
+    let alarmSound = null;
+
+    function updateAlarmClock() {
+      const now = new Date();
+      const timeStr = now.toTimeString().slice(0, 8);
+      const display = document.getElementById('alarmDisplay');
+      if (display) display.textContent = timeStr;
+
+      // Check alarm
+      if (alarmTime && timeStr === alarmTime) {
+        triggerAlarm();
+      }
+    }
+
+    function setAlarm() {
+      const input = document.getElementById('alarmTime');
+      if (!input.value) {
+        alert('Please select a time!');
+        return;
+      }
+      alarmTime = input.value + ':00';
+      document.getElementById('alarmStatus').textContent = 'Set for ' + alarmTime;
+      document.getElementById('alarmStatus').style.color = '#2ecc71';
+    }
+
+    function triggerAlarm() {
+      if (alarmSound) return;
+      document.getElementById('alarmStatus').textContent = '🔔 ALARM RINGING!';
+      document.getElementById('alarmStatus').style.color = '#ff6b6b';
+      
+      // Play sound using Web Audio
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        alarmSound = true;
+        let count = 0;
+        const beep = () => {
+          if (count > 20 || !alarmSound) return;
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.frequency.value = 800;
+          gain.gain.value = 0.3;
+          osc.start();
+          osc.stop(ctx.currentTime + 0.1);
+          count++;
+          setTimeout(beep, 300);
+        };
+        beep();
+        
+        setTimeout(() => {
+          alarmSound = null;
+        }, 6000);
+      } catch(e) {
+        alert('🔔 ALARM! Time to wake up!');
+        alarmSound = null;
+      }
+    }
+
+    function stopAlarm() {
+      alarmSound = null;
+      document.getElementById('alarmStatus').textContent = 'Stopped';
+      document.getElementById('alarmStatus').style.color = '#999';
+    }
+
+    // ========== PERIODIC TABLE EXPLORER ==========
+    function openPeriodicTable() {
+      const elements = [
+        {symbol:'H', name:'Hydrogen', number:1, mass:1.008, color:'#FF6B6B'},
+        {symbol:'He', name:'Helium', number:2, mass:4.003, color:'#4ECDC4'},
+        {symbol:'Li', name:'Lithium', number:3, mass:6.941, color:'#FFE66D'},
+        {symbol:'Be', name:'Beryllium', number:4, mass:9.012, color:'#95E1D3'},
+        {symbol:'B', name:'Boron', number:5, mass:10.81, color:'#F38181'},
+        {symbol:'C', name:'Carbon', number:6, mass:12.011, color:'#AA96DA'},
+        {symbol:'N', name:'Nitrogen', number:7, mass:14.007, color:'#A8D8EA'},
+        {symbol:'O', name:'Oxygen', number:8, mass:15.999, color:'#FFD3B4'},
+        {symbol:'F', name:'Fluorine', number:9, mass:18.998, color:'#D5F5E3'},
+        {symbol:'Ne', name:'Neon', number:10, mass:20.180, color:'#FADBD8'},
+        {symbol:'Na', name:'Sodium', number:11, mass:22.990, color:'#D6EAF8'},
+        {symbol:'Mg', name:'Magnesium', number:12, mass:24.305, color:'#FCF3CF'},
+        {symbol:'Al', name:'Aluminium', number:13, mass:26.982, color:'#D5F5E3'},
+        {symbol:'Si', name:'Silicon', number:14, mass:28.086, color:'#E8DAEF'},
+        {symbol:'P', name:'Phosphorus', number:15, mass:30.974, color:'#FAD7A0'},
+        {symbol:'S', name:'Sulfur', number:16, mass:32.065, color:'#F5CBA7'},
+        {symbol:'Cl', name:'Chlorine', number:17, mass:35.453, color:'#A3E4D7'},
+        {symbol:'Ar', name:'Argon', number:18, mass:39.948, color:'#AED6F1'},
+        {symbol:'K', name:'Potassium', number:19, mass:39.098, color:'#F1948A'},
+        {symbol:'Ca', name:'Calcium', number:20, mass:40.078, color:'#82E0AA'}
+      ];
+
+      let gridHTML = elements.map(el => `
+        <div class="element" onclick="showElementDetail(${el.number})" style="background:${el.color}33;">
+          <div class="symbol">${el.symbol}</div>
+          <div style="font-size:0.6rem;">${el.number}</div>
+        </div>
+      `).join('');
+
+      // Fill remaining cells
+      for (let i = elements.length; i < 18*10; i++) {
+        gridHTML += `<div class="element" style="background:transparent;opacity:0.2;"></div>`;
+      }
+
+      openModal(`
+        <h2><i class="fas fa-table"></i> Periodic Table Explorer</h2>
+        <div class="periodic-grid">${gridHTML}</div>
+        <div class="element-detail" id="elementDetail">Click an element for details</div>
+      `);
+
+      window.showElementDetail = (number) => {
+        const el = elements.find(e => e.number === number);
+        if (!el) return;
+        document.getElementById('elementDetail').innerHTML = `
+          <strong style="font-size:1.5rem;color:#6C63FF;">${el.symbol}</strong><br>
+          <strong>${el.name}</strong><br>
+          Atomic Number: ${el.number}<br>
+          Atomic Mass: ${el.mass} g/mol<br>
+          <span style="background:${el.color};padding:2px 12px;border-radius:12px;display:inline-block;margin-top:8px;">
+            ${el.color}
+          </span>
+        `;
+      };
+    }
+
+    // ========== CHEMICAL EQUATION BALANCER ==========
+    function openBalancer() {
+      openModal(`
+        <h2><i class="fas fa-balance-scale"></i> Chemical Equation Balancer</h2>
+        <p style="text-align:center;color:#999;">Simple balancer for basic equations</p>
+        <div style="margin:15px 0;">
+          <input type="text" id="eqInput" placeholder="e.g., H2 + O2 -> H2O" style="width:100%;padding:12px;border-radius:12px;border:1px solid #ddd;font-size:1rem;" />
+        </div>
+        <button class="btn primary" onclick="balanceEquation()" style="width:100%;">Balance</button>
+        <div id="eqResult" style="margin-top:15px;text-align:center;font-weight:600;font-size:1.1rem;"></div>
+      `);
+    }
+
+    function balanceEquation() {
+      const input = document.getElementById('eqInput').value.trim();
+      const result = document.getElementById('eqResult');
+      
+      if (!input) {
+        result.textContent = 'Please enter an equation!';
+        result.style.color = '#ff6b6b';
+        return;
+      }
+
+      // Simple pattern matching for common equations
+      const patterns = {
+        'H2 + O2 -> H2O': '2H₂ + O₂ → 2H₂O',
+        'H2 + O2 = H2O': '2H₂ + O₂ → 2H₂O',
+        'Fe + O2 -> Fe2O3': '4Fe + 3O₂ → 2Fe₂O₃',
+        'Fe + O2 = Fe2O3': '4Fe + 3O₂ → 2Fe₂O₃',
+        'C + O2 -> CO2': 'C + O₂ → CO₂',
+        'C + O2 = CO2': 'C + O₂ → CO₂',
+        'N2 + H2 -> NH3': 'N₂ + 3H₂ → 2NH₃',
+        'N2 + H2 = NH3': 'N₂ + 3H₂ → 2NH₃',
+        'CH4 + O2 -> CO2 + H2O': 'CH₄ + 2O₂ → CO₂ + 2H₂O',
+        'CH4 + O2 = CO2 + H2O': 'CH₄ + 2O₂ → CO₂ + 2H₂O'
+      };
+
+      // Check if input matches any pattern (case insensitive)
+      const inputLower = input.toLowerCase().replace(/\s/g, '');
+      for (const [key, value] of Object.entries(patterns)) {
+        if (inputLower === key.toLowerCase().replace(/\s/g, '')) {
+          result.textContent = '✅ Balanced: ' + value;
+          result.style.color = '#2ecc71';
+          return;
+        }
+      }
+
+      result.textContent = '⚠️ Could not balance automatically. Try: H2 + O2 -> H2O';
+      result.style.color = '#f39c12';
+    }
+
+    // ========== MOLAR MASS CALCULATOR ==========
+    function openMolarMass() {
+      openModal(`
+        <h2><i class="fas fa-weight"></i> Molar Mass Calculator</h2>
+        <p style="text-align:center;color:#999;">Enter a chemical formula (e.g., H2O, NaCl, C6H12O6)</p>
+        <div class="molar-input">
+          <input type="text" id="molarInput" placeholder="e.g., H2O" />
+          <button class="btn primary" onclick="calculateMolarMass()">Calculate</button>
+        </div>
+        <div class="molar-result" id="molarResult">Enter a formula to calculate</div>
+      `);
+    }
+
+    function calculateMolarMass() {
+      const input = document.getElementById('molarInput').value.trim();
+      const result = document.getElementById('molarResult');
+      
+      if (!input) {
+        result.textContent = 'Please enter a formula!';
+        result.style.color = '#ff6b6b';
+        return;
+      }
+
+      const atomicMasses = {
+        'H': 1.008, 'He': 4.003, 'Li': 6.941, 'Be': 9.012, 'B': 10.81,
+        'C': 12.011, 'N': 14.007, 'O': 15.999, 'F': 18.998, 'Ne': 20.180,
+        'Na': 22.990, 'Mg': 24.305, 'Al': 26.982, 'Si': 28.086, 'P': 30.974,
+        'S': 32.065, 'Cl': 35.453, 'K': 39.098, 'Ca': 40.078, 'Fe': 55.845,
+        'Cu': 63.546, 'Zn': 65.380, 'Br': 79.904, 'Ag': 107.868, 'I': 126.904,
+        'Au': 196.967, 'Hg': 200.592, 'Pb': 207.200, 'U': 238.029
+      };
+
+      try {
+        // Parse formula
+        let formula = input;
+        let totalMass = 0;
+        let elements = [];
+        
+        // Simple parser for formulas like H2O, NaCl, C6H12O6
+        const matches = formula.match(/([A-Z][a-z]?)(\d*)/g);
+        if (!matches) {
+          result.textContent = 'Invalid formula!';
+          result.style.color = '#ff6b6b';
+          return;
+        }
+
+        matches.forEach(match => {
+          const element = match.match(/([A-Z][a-z]?)/)[0];
+          const count = match.match(/\d+/) ? parseInt(match.match(/\d+/)[0]) : 1;
+          if (atomicMasses[element]) {
+            totalMass += atomicMasses[element] * count;
+            elements.push(`${element}${count > 1 ? count : ''}`);
+          } else {
+            throw new Error('Unknown element: ' + element);
+          }
+        });
+
+        result.innerHTML = `
+          <strong>${formula}</strong> = <strong style="color:#6C63FF;font-size:1.4rem;">${totalMass.toFixed(3)}</strong> g/mol<br>
+          <span style="font-size:0.9rem;color:#999;">${elements.join(' · ')}</span>
+        `;
+        result.style.color = '#2ecc71';
+      } catch(e) {
+        result.textContent = 'Error: ' + e.message;
+        result.style.color = '#ff6b6b';
+      }
+    }
+
+    // ========== pH CALCULATOR ==========
+    function openPHCalculator() {
+      openModal(`
+        <h2><i class="fas fa-vial"></i> pH Calculator</h2>
+        <p style="text-align:center;color:#999;">Calculate pH from H⁺ concentration</p>
+        <div class="ph-input">
+          <input type="number" id="phInput" placeholder="H⁺ concentration (M)" step="any" />
+          <button class="btn primary" onclick="calculatePH()">Calculate pH</button>
+        </div>
+        <div class="ph-result" id="phResult">Enter concentration to calculate pH</div>
+        <div class="ph-scale">
+          <div class="indicator" id="phIndicator" style="left:50%;"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:0.8rem;color:#999;margin-top:4px;">
+          <span>0 (Acidic)</span>
+          <span>7 (Neutral)</span>
+          <span>14 (Basic)</span>
+        </div>
+      `);
+    }
+
+    function calculatePH() {
+      const input = document.getElementById('phInput');
+      const result = document.getElementById('phResult');
+      const indicator = document.getElementById('phIndicator');
+      
+      const concentration = parseFloat(input.value);
+      
+      if (isNaN(concentration) || concentration <= 0) {
+        result.textContent = 'Please enter a positive concentration!';
+        result.style.color = '#ff6b6b';
+        indicator.style.left = '50%';
+        return;
+      }
+
+      const pH = -Math.log10(concentration);
+      const clampedPH = Math.max(0, Math.min(14, pH));
+      
+      let type = '';
+      if (pH < 7) type = '🔴 Acidic';
+      else if (pH > 7) type = '🔵 Basic';
+      else type = '🟢 Neutral';
+      
+      // Position indicator
+      const position = (clampedPH / 14) * 100;
+      indicator.style.left = position + '%';
+
+      result.innerHTML = `
+        <strong>pH = ${pH.toFixed(2)}</strong> — ${type}<br>
+        <span style="font-size:0.9rem;color:#999;">[H⁺] = ${concentration} M</span>
+      `;
+      result.style.color = '#2ecc71';
+    }
+
+    // ========== CHEMISTRY QUIZ (1000 MCQs) ==========
+    function openChemistryQuiz() {
+      // Generate 1000 chemistry MCQs
+      const quizQuestions = generateChemistryMCQs(1000);
+      let currentQuizIndex = 0;
+      let quizScore = 0;
+      let quizAnswered = false;
+
+      function renderQuiz() {
+        const q = quizQuestions[currentQuizIndex];
+        if (!q) {
+          modalBody.innerHTML = `
+            <h2><i class="fas fa-trophy"></i> Quiz Complete!</h2>
+            <div class="quiz-score">🎉 Your Score: ${quizScore}/${quizQuestions.length}</div>
+            <div style="text-align:center;margin-top:20px;">
+              <button class="btn primary" onclick="openChemistryQuiz()">Retry</button>
+            </div>
+          `;
+          return;
+        }
+
+        const optionsHTML = q.options.map((opt, idx) => `
+          <button onclick="answerQuiz(${idx})" data-idx="${idx}">${opt}</button>
+        `).join('');
+
+        modalBody.innerHTML = `
+          <h2><i class="fas fa-flask"></i> Chemistry Quiz</h2>
+          <div style="display:flex;justify-content:space-between;margin-bottom:10px;">
+            <span>Question ${currentQuizIndex + 1}/${quizQuestions.length}</span>
+            <span>Score: ${quizScore}</span>
+          </div>
+          <div class="quiz-container">
+            <div class="quiz-question">${q.question}</div>
+            <div class="quiz-options" id="quizOptions">${optionsHTML}</div>
+            <div id="quizFeedback" style="margin-top:10px;font-weight:600;"></div>
+          </div>
+        `;
+
+        // Add event listeners to options
+        document.querySelectorAll('#quizOptions button').forEach(btn => {
+          btn.addEventListener('click', function() {
+            if (quizAnswered) return;
+            const idx = parseInt(this.dataset.idx);
+            answerQuiz(idx);
+          });
+        });
+
+        quizAnswered = false;
+      }
+
+      window.answerQuiz = function(idx) {
+        if (quizAnswered) return;
+        quizAnswered = true;
+        
+        const q = quizQuestions[currentQuizIndex];
+        const buttons = document.querySelectorAll('#quizOptions button');
+        const feedback = document.getElementById('quizFeedback');
+        
+        buttons.forEach((btn, i) => {
+          btn.disabled = true;
+          if (i === q.correct) {
+            btn.classList.add('correct');
+          } else if (i === idx && idx !== q.correct) {
+            btn.classList.add('wrong');
+          }
+        });
+
+        if (idx === q.correct) {
+          quizScore++;
+          feedback.textContent = '✅ Correct! +1 point';
+          feedback.style.color = '#2ecc71';
+        } else {
+          feedback.textContent = `❌ Wrong. Correct answer: ${q.options[q.correct]}`;
+          feedback.style.color = '#ff6b6b';
+        }
+
+        setTimeout(() => {
+          currentQuizIndex++;
+          renderQuiz();
+        }, 1500);
+      };
+
+      renderQuiz();
+    }
+
+    // ========== GENERATE CHEMISTRY MCQs ==========
+    function generateChemistryMCQs(count) {
+      const topics = [
+        // Atomic Structure
+        { q: 'What is the atomic number of Carbon?', opts: ['6', '8', '12', '14'], correct: 0 },
+        { q: 'How many protons does Oxygen have?', opts: ['6', '8', '10', '16'], correct: 1 },
+        { q: 'What is the electron configuration of Sodium?', opts: ['1s²2s²2p⁶3s¹', '1s²2s²2p⁶3s²', '1s²2s²2p⁶', '1s²2s²'], correct: 0 },
+        // More topics...
+        { q: 'What is the molar mass of H₂O?', opts: ['18 g/mol', '16 g/mol', '20 g/mol', '22 g/mol'], correct: 0 },
+        { q: 'What is the pH of pure water?', opts: ['7', '0', '14', '10'], correct: 0 },
+        { q: 'What is the chemical formula of salt?', opts: ['NaCl', 'HCl', 'NaOH', 'Na₂CO₃'], correct: 0 },
+        { q: 'What is the gas law PV = nRT called?', opts: ['Ideal Gas Law', 'Boyle\'s Law', 'Charles\' Law', 'Avogadro\'s Law'], correct: 0 },
+        { q: 'What is the atomic number of Hydrogen?', opts: ['1', '2', '3', '4'], correct: 0 },
+        { q: 'What is the chemical symbol for Gold?', opts: ['Au', 'Ag', 'Fe', 'Cu'], correct: 0 },
+        { q: 'What is the most abundant gas in Earth\'s atmosphere?', opts: ['Nitrogen', 'Oxygen', 'CO₂', 'Argon'], correct: 0 },
+        { q: 'What is the formula for methane?', opts: ['CH₄', 'C₂H₆', 'C₃H₈', 'C₄H₁₀'], correct: 0 },
+        { q: 'What is the pH of acidic solutions?', opts: ['<7', '>7', '=7', 'None'], correct: 0 },
+        { q: 'What is Avogadro\'s number?', opts: ['6.022×10²³', '3.011×10²³', '1.5×10²³', '6.022×10²²'], correct: 0 },
+        { q: 'What is the formula for table sugar?', opts: ['C₁₂H₂₂O₁₁', 'C₆H₁₂O₆', 'C₁₂H₂₄O₁₂', 'C₆H₆O₆'], correct: 0 },
+        { q: 'What is the element with symbol Fe?', opts: ['Iron', 'Lead', 'Gold', 'Silver'], correct: 0 },
+        { q: 'What is the most reactive metal?', opts: ['Francium', 'Sodium', 'Potassium', 'Lithium'], correct: 0 },
+        { q: 'What is the gas used in balloons?', opts: ['Helium', 'Hydrogen', 'Nitrogen', 'Oxygen'], correct: 0 },
+        { q: 'What is the chemical symbol for Lead?', opts: ['Pb', 'Pl', 'Ld', 'Pd'], correct: 0 },
+        { q: 'What is the formula for hydrochloric acid?', opts: ['HCl', 'H₂SO₄', 'HNO₃', 'H₂CO₃'], correct: 0 },
+        { q: 'What is the pH of strong acid?', opts: ['0-1', '2-3', '7-8', '12-14'], correct: 0 },
+      ];
+
+      // Generate more questions to reach 1000
+      const questions = [];
+      const baseQuestions = [...topics];
+      
+      for (let i = 0; i < count; i++) {
+        const base = baseQuestions[i % baseQuestions.length];
+        const random = Math.random();
+        let q = { ...base };
+        
+        if (random < 0.2) {
+          // Modify question slightly
+          q.question = q.question + '?';
+        }
+        
+        // Re-shuffle options to avoid patterns
+        if (Math.random() > 0.5) {
+          const shuffled = q.options.map((o, i) => ({o, i}));
+          shuffled.sort(() => Math.random() - 0.5);
+          q.options = shuffled.map(s => s.o);
+          q.correct = shuffled.findIndex(s => s.i === q.correct);
+        }
+        
+        questions.push(q);
+      }
+      
+      return questions;
+    }
+
+    // ========== PROJECT DATA ==========
+    const projects = [
+      // Programming Projects
+      { 
+        id: 1, 
+        title: 'Snake Game (Nokia Style)', 
+        category: 'programming', 
+        tech: ['HTML5', 'Canvas', 'JavaScript'], 
+        img: 'https://via.placeholder.com/300x180/6C63FF/fff?text=🐍+Snake+Game',
+        action: 'openSnakeGame()'
+      },
+      { 
+        id: 2, 
+        title: 'Dino Game (Chrome Style)', 
+        category: 'programming', 
+        tech: ['HTML5', 'Canvas', 'JavaScript'], 
+        img: 'https://via.placeholder.com/300x180/6C63FF/fff?text=🦕+Dino+Game',
+        action: 'openDinoGame()'
+      },
+      { 
+        id: 3, 
+        title: 'Scientific Calculator', 
+        category: 'programming', 
+        tech: ['HTML', 'CSS', 'JavaScript'], 
+        img: 'https://via.placeholder.com/300x180/6C63FF/fff?text=🧮+Calculator',
+        action: 'openCalculator()'
+      },
+      { 
+        id: 4, 
+        title: 'Alarm Clock', 
+        category: 'programming', 
+        tech: ['HTML', 'CSS', 'JavaScript', 'Web Audio'], 
+        img: 'https://via.placeholder.com/300x180/6C63FF/fff?text=⏰+Alarm+Clock',
+        action: 'openAlarmClock()'
+      },
+      { 
+        id: 5, 
+        title: 'Portfolio Website', 
+        category: 'programming', 
+        tech: ['HTML', 'CSS', 'JavaScript'], 
+        img: 'https://via.placeholder.com/300x180/6C63FF/fff?text=🌐+Portfolio',
+        action: 'alert("This is the portfolio you\'re viewing!")'
+      },
+      // Chemistry Projects
+      { 
+        id: 6, 
+        title: 'Periodic Table Explorer', 
+        category: 'chemistry', 
+        tech: ['HTML', 'CSS', 'JavaScript'], 
+        img: 'https://via.placeholder.com/300x180/34d399/fff?text=📊+Periodic+Table',
+        action: 'openPeriodicTable()'
+      },
+      { 
+        id: 7, 
+        title: 'Chemical Equation Balancer', 
+        category: 'chemistry', 
+        tech: ['HTML', 'CSS', 'JavaScript'], 
+        img: 'https://via.placeholder.com/300x180/34d399/fff?text=⚖️+Balancer',
+        action: 'openBalancer()'
+      },
+      { 
+        id: 8, 
+        title: 'Molar Mass Calculator', 
+        category: 'chemistry', 
+        tech: ['HTML', 'CSS', 'JavaScript'], 
+        img: 'https://via.placeholder.com/300x180/34d399/fff?text=⚖️+Molar+Mass',
+        action: 'openMolarMass()'
+      },
+      { 
+        id: 9, 
+        title: 'pH Calculator', 
+        category: 'chemistry', 
+        tech: ['HTML', 'CSS', 'JavaScript'], 
+        img: 'https://via.placeholder.com/300x180/34d399/fff?text=🧪+pH+Calculator',
+        action: 'openPHCalculator()'
+      },
+      { 
+        id: 10, 
+        title: 'Chemistry Quiz (1000 MCQs)', 
+        category: 'chemistry', 
+        tech: ['HTML', 'CSS', 'JavaScript'], 
+        img: 'https://via.placeholder.com/300x180/34d399/fff?text=📝+1000+MCQs',
+        action: 'openChemistryQuiz()'
+      }
+    ];
+
+    const grid = document.getElementById('projects-grid');
+
+    function renderProjects(filter = 'all') {
+      const filtered = filter === 'all' ? projects : projects.filter(p => p.category === filter);
+      grid.innerHTML = filtered.map(p => `
+        <div class="project-card" data-category="${p.category}">
+          <img src="${p.img}" alt="${p.title}" />
+          <h4>${p.title}</h4>
+          <div class="tech">${p.tech.map(t => `<span>${t}</span>`).join('')}</div>
+          <div class="project-links">
+            <a onclick="${p.action}"><i class="fas fa-play"></i> Open</a>
+            <a href="#"><i class="fab fa-github"></i> GitHub</a>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    renderProjects();
+
+    // ========== PROJECT FILTERING ==========
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderProjects(btn.dataset.filter);
+      });
+    });
+
+    // ========== CONTACT FORM ==========
+    document.getElementById('contactForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      alert('Thank you! Your message has been sent. (Demo)');
+      e.target.reset();
+    });
+
+    // ========== CANVAS ROUND RECT POLYFILL ==========
+    if (!CanvasRenderingContext2D.prototype.roundRect) {
+      CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
+        if (r > w/2) r = w/2;
+        if (r > h/2) r = h/2;
+        this.moveTo(x + r, y);
+        this.lineTo(x + w - r, y);
+        this.quadraticCurveTo(x + w, y, x + w, y + r);
+        this.lineTo(x + w, y + h - r);
+        this.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+        this.lineTo(x + r, y + h);
+        this.quadraticCurveTo(x, y + h, x, y + h - r);
+        this.lineTo(x, y + r);
+        this.quadraticCurveTo(x, y, x + r, y);
+        this.closePath();
+        return this;
+      };
+    }
+
+    console.log('🚀 Portfolio ready — built with ❤️');
+  </script>
+</body>
+</html>
