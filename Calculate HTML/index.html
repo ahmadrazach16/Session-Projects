@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Division & Multiplication Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 18px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        button {
+            flex: 1;
+            padding: 14px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background: #5a6fd6;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button.reset {
+            background: #e74c3c;
+        }
+
+        button.reset:hover {
+            background: #c0392b;
+            box-shadow: 0 5px 20px rgba(231, 76, 60, 0.4);
+        }
+
+        .result-box {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 25px;
+            border: 2px solid #e9ecef;
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .result-row:last-child {
+            border-bottom: none;
+        }
+
+        .result-label {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .result-value {
+            color: #333;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .result-value.highlight {
+            color: #667eea;
+            font-size: 22px;
+        }
+
+        .result-value.success {
+            color: #27ae60;
+        }
+
+        .result-value.error {
+            color: #e74c3c;
+        }
+
+        .verification {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .verification.success {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #c3e6cb;
+        }
+
+        .verification.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #f5c6cb;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 25px;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔄 Division × Multiplication</h1>
+        <p class="subtitle">Divide a number, then multiply to verify!</p>
+
+        <div class="input-group">
+            <label for="dividend">📊 Number to Divide</label>
+            <input type="number" id="dividend" value="100" step="any" />
+        </div>
+
+        <div class="input-group">
+            <label for="divisor">➗ Divisor</label>
+            <input type="number" id="divisor" value="3" step="any" />
+        </div>
+
+        <div class="button-group">
+            <button onclick="calculate()">🧮 Calculate</button>
+            <button class="reset" onclick="resetAll()">↺ Reset</button>
+        </div>
+
+        <div class="result-box" id="resultBox">
+            <div class="result-row">
+                <span class="result-label">📝 Division:</span>
+                <span class="result-value highlight" id="divisionResult">—</span>
+            </div>
+            <div class="result-row">
+                <span class="result-label">✖️ Multiplication:</span>
+                <span class="result-value highlight" id="multiplicationResult">—</span>
+            </div>
+            <div class="result-row">
+                <span class="result-label">🎯 Original Number:</span>
+                <span class="result-value" id="originalResult">—</span>
+            </div>
+        </div>
+
+        <div id="verificationMessage"></div>
+    </div>
+
+    <script>
+        function calculate() {
+            const dividend = parseFloat(document.getElementById('dividend').value);
+            const divisor = parseFloat(document.getElementById('divisor').value);
+
+            // Validation
+            if (isNaN(dividend) || isNaN(divisor)) {
+                alert('Please enter valid numbers!');
+                return;
+            }
+
+            if (divisor === 0) {
+                alert('Cannot divide by zero!');
+                return;
+            }
+
+            // Step 1: Division
+            const divisionResult = dividend / divisor;
+
+            // Step 2: Multiply the result by the divisor
+            const multiplicationResult = divisionResult * divisor;
+
+            // Display results
+            document.getElementById('divisionResult').textContent = divisionResult.toFixed(4);
+            document.getElementById('multiplicationResult').textContent = multiplicationResult.toFixed(4);
+            document.getElementById('originalResult').textContent = dividend;
+
+            // Verification
+            const verificationDiv = document.getElementById('verificationMessage');
+
+            // Check if multiplication result equals the original (with tolerance for floating-point)
+            const difference = Math.abs(multiplicationResult - dividend);
+            const tolerance = 0.0001;
+
+            if (difference < tolerance) {
+                verificationDiv.className = 'verification success';
+                verificationDiv.innerHTML = `✅ Verified! ${dividend} ÷ ${divisor} = ${divisionResult.toFixed(4)}<br>${divisionResult.toFixed(4)} × ${divisor} = ${multiplicationResult.toFixed(4)} ✅`;
+            } else {
+                verificationDiv.className = 'verification error';
+                verificationDiv.innerHTML = `⚠️ Verification Failed!<br>Original: ${dividend}, Got: ${multiplicationResult.toFixed(4)}<br>Difference: ${difference.toFixed(10)}`;
+            }
+        }
+
+        function resetAll() {
+            document.getElementById('dividend').value = '100';
+            document.getElementById('divisor').value = '3';
+            document.getElementById('divisionResult').textContent = '—';
+            document.getElementById('multiplicationResult').textContent = '—';
+            document.getElementById('originalResult').textContent = '—';
+            document.getElementById('verificationMessage').className = '';
+            document.getElementById('verificationMessage').innerHTML = '';
+        }
+
+        // Auto-calculate on Enter key
+        document.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                const activeElement = document.activeElement;
+                if (activeElement.id === 'dividend' || activeElement.id === 'divisor') {
+                    calculate();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
