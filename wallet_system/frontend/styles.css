@@ -1,0 +1,543 @@
+/* ============================================================
+   Design tokens
+   Direction: "Ledger" — a private bank's paper statement,
+   rendered digitally. Deep ink surface, warm paper cards,
+   serif figures for money, mono for reference codes.
+   ============================================================ */
+:root {
+  --ink-900: #0B1220;
+  --ink-800: #121B2E;
+  --ink-700: #1A2740;
+  --ink-600: #2A3B5C;
+  --paper: #F7F5EE;
+  --paper-dim: #EAE6D9;
+  --line: rgba(247, 245, 238, 0.12);
+  --line-soft: rgba(20, 25, 38, 0.10);
+
+  --emerald: #2FBF87;
+  --emerald-dim: #1E8F65;
+  --coral: #E15B44;
+  --gold: #D4A657;
+
+  --text-hi: #F3F1E9;
+  --text-mid: #B8BFCF;
+  --text-low: #7C8AA5;
+  --text-ink: #16202E;
+  --text-ink-mid: #4B5568;
+
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body: 'Inter', -apple-system, sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  background: var(--ink-900);
+  color: var(--text-hi);
+  -webkit-font-smoothing: antialiased;
+}
+
+.hidden { display: none !important; }
+
+a, button, input, select { font-family: inherit; }
+
+::selection { background: var(--emerald); color: var(--ink-900); }
+
+/* ============================================================
+   Brand
+   ============================================================ */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.brand-mark {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--emerald);
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid var(--emerald);
+  border-radius: 8px;
+}
+.brand-name {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+/* ============================================================
+   Auth screen
+   ============================================================ */
+.auth-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(ellipse 900px 500px at 50% -10%, rgba(47,191,135,0.14), transparent),
+    var(--ink-900);
+  padding: 24px;
+}
+.auth-card {
+  width: 100%;
+  max-width: 400px;
+  background: var(--ink-800);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 36px 32px;
+}
+.auth-tagline {
+  font-family: var(--font-display);
+  font-style: italic;
+  color: var(--text-mid);
+  font-size: 15px;
+  margin: 10px 0 28px;
+}
+.auth-tabs {
+  display: flex;
+  gap: 4px;
+  background: var(--ink-900);
+  padding: 4px;
+  border-radius: var(--radius-md);
+  margin-bottom: 24px;
+}
+.auth-tab {
+  flex: 1;
+  padding: 9px 0;
+  border: none;
+  background: transparent;
+  color: var(--text-mid);
+  font-size: 13.5px;
+  font-weight: 600;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.auth-tab.active {
+  background: var(--ink-700);
+  color: var(--text-hi);
+}
+.auth-form { display: flex; flex-direction: column; gap: 16px; }
+.auth-hint {
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-low);
+  font-family: var(--font-mono);
+  margin: -6px 0 0;
+}
+
+/* ============================================================
+   Form elements
+   ============================================================ */
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-mid);
+}
+.view label { color: var(--text-ink-mid); }
+.optional {
+  font-weight: 400;
+  color: var(--text-low);
+  text-transform: none;
+  font-size: 11.5px;
+}
+input, select {
+  padding: 11px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line);
+  background: var(--ink-900);
+  color: var(--text-hi);
+  font-size: 14.5px;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+input:focus, select:focus { border-color: var(--emerald); }
+.view input, .view select {
+  background: #fff;
+  border: 1px solid #DCD8CA;
+  color: var(--text-ink);
+}
+.view input:focus, .view select:focus { border-color: var(--emerald-dim); }
+.field-hint { font-weight: 400; font-size: 11.5px; color: var(--text-low); }
+
+.form-error {
+  font-size: 12.5px;
+  color: var(--coral);
+  min-height: 0;
+}
+.form-error:empty { display: none; }
+.form-success {
+  font-size: 12.5px;
+  color: var(--emerald-dim);
+}
+.form-success:empty { display: none; }
+
+/* ============================================================
+   Buttons
+   ============================================================ */
+.btn {
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 11px 18px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.08s ease, filter 0.15s ease, background 0.15s ease;
+}
+.btn:active { transform: scale(0.98); }
+.btn-block { width: 100%; }
+.btn-primary { background: var(--emerald); color: #06251A; }
+.btn-primary:hover { filter: brightness(1.08); }
+.btn-success { background: var(--emerald); color: #06251A; }
+.btn-success:hover { filter: brightness(1.08); }
+.btn-danger { background: var(--ink-900); color: var(--coral); border: 1px solid var(--coral); }
+.btn-danger:hover { background: rgba(225,91,68,0.08); }
+.view .btn-danger { background: #fff; }
+.btn-ghost { background: transparent; color: var(--text-mid); border: 1px solid var(--line); }
+.btn-ghost:hover { background: var(--ink-700); }
+.btn-sm { padding: 6px 12px; font-size: 12.5px; }
+.link-btn {
+  background: none; border: none; color: var(--emerald-dim);
+  font-size: 13px; font-weight: 600; cursor: pointer;
+}
+
+/* ============================================================
+   App shell
+   ============================================================ */
+.app-shell {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  min-height: 100vh;
+}
+.sidebar {
+  background: var(--ink-800);
+  border-right: 1px solid var(--line);
+  padding: 24px 18px;
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+.nav {
+  margin-top: 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 12px;
+  background: none;
+  border: none;
+  color: var(--text-mid);
+  font-size: 14px;
+  font-weight: 600;
+  text-align: left;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+.nav-item:hover { background: var(--ink-700); color: var(--text-hi); }
+.nav-item.active { background: var(--ink-700); color: var(--emerald); }
+.nav-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: currentColor; opacity: 0.6;
+}
+.sidebar-footer { margin-top: auto; display: flex; flex-direction: column; gap: 12px; }
+.user-chip { display: flex; align-items: center; gap: 10px; padding: 8px; }
+.user-avatar {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: var(--gold); color: #2B1E06;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display); font-weight: 700; font-size: 15px;
+}
+.user-name { font-size: 13.5px; font-weight: 600; color: var(--text-hi); }
+.user-role { font-size: 11px; color: var(--text-low); font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 0.04em; }
+
+.main {
+  background: var(--paper);
+  color: var(--text-ink);
+  padding: 36px 44px 60px;
+  position: relative;
+}
+
+.view-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 28px;
+}
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--emerald-dim);
+  margin: 0 0 4px;
+  font-weight: 600;
+}
+.view-header h1 {
+  font-family: var(--font-display);
+  font-size: 32px;
+  margin: 0;
+  font-weight: 600;
+}
+
+/* ============================================================
+   Wallet "ledger stub" cards — the signature element:
+   a torn-receipt shape with a perforated edge, dark like a
+   passbook cover, showing balance in serif numerals.
+   ============================================================ */
+.wallet-stubs {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 18px;
+  margin-bottom: 32px;
+}
+.wallet-stub {
+  background: var(--ink-800);
+  color: var(--text-hi);
+  border-radius: var(--radius-lg);
+  padding: 22px 22px 18px;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--ink-600);
+}
+.wallet-stub::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--emerald), var(--gold));
+}
+.wallet-stub-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 18px;
+}
+.wallet-currency {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-low);
+  letter-spacing: 0.06em;
+}
+.wallet-id {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-low);
+}
+.wallet-status {
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.wallet-status.ACTIVE { background: rgba(47,191,135,0.16); color: var(--emerald); }
+.wallet-status.FROZEN { background: rgba(212,166,87,0.16); color: var(--gold); }
+.wallet-status.CLOSED { background: rgba(225,91,68,0.16); color: var(--coral); }
+.wallet-balance {
+  font-family: var(--font-display);
+  font-size: 34px;
+  font-weight: 600;
+  line-height: 1;
+}
+.wallet-balance-cents { font-size: 20px; color: var(--text-low); }
+.wallet-stub-foot {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--ink-600);
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-low);
+}
+.wallet-stub-empty {
+  grid-column: 1 / -1;
+  border: 1.5px dashed #D8D3C2;
+  border-radius: var(--radius-lg);
+  padding: 40px;
+  text-align: center;
+  color: var(--text-ink-mid);
+}
+
+/* ============================================================
+   Panels
+   ============================================================ */
+.panel-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+.panel {
+  background: #fff;
+  border: 1px solid #E5E1D3;
+  border-radius: var(--radius-lg);
+  padding: 22px;
+  margin-bottom: 18px;
+}
+.panel-narrow { max-width: 460px; }
+.panel h3 {
+  font-family: var(--font-display);
+  font-size: 19px;
+  margin: 0 0 4px;
+}
+.panel-sub { font-size: 13px; color: var(--text-ink-mid); margin: 0 0 16px; }
+.panel-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+.panel-header-row h3 { margin: 0; }
+.stack-form { display: flex; flex-direction: column; gap: 14px; }
+
+/* ============================================================
+   Transaction list
+   ============================================================ */
+.tx-list { display: flex; flex-direction: column; }
+.tx-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  align-items: center;
+  gap: 14px;
+  padding: 13px 0;
+  border-bottom: 1px solid #EEEAE0;
+}
+.tx-row:last-child { border-bottom: none; }
+.tx-icon {
+  width: 34px; height: 34px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; font-weight: 700;
+  flex-shrink: 0;
+}
+.tx-icon.in { background: rgba(47,191,135,0.14); color: var(--emerald-dim); }
+.tx-icon.out { background: rgba(225,91,68,0.12); color: var(--coral); }
+.tx-icon.adj { background: rgba(212,166,87,0.16); color: #8A6512; }
+.tx-main .tx-title { font-size: 14px; font-weight: 600; }
+.tx-main .tx-ref { font-family: var(--font-mono); font-size: 11px; color: var(--text-ink-mid); margin-top: 2px; }
+.tx-amount { font-family: var(--font-mono); font-size: 15px; font-weight: 600; text-align: right; }
+.tx-amount.in { color: var(--emerald-dim); }
+.tx-amount.out { color: var(--coral); }
+.tx-status {
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.03em; padding: 3px 8px; border-radius: 20px;
+  justify-self: end;
+}
+.tx-status.COMPLETED { background: rgba(47,191,135,0.14); color: var(--emerald-dim); }
+.tx-status.FAILED { background: rgba(225,91,68,0.12); color: var(--coral); }
+.tx-status.PENDING { background: rgba(212,166,87,0.16); color: #8A6512; }
+.tx-status.CANCELLED { background: #EEEAE0; color: var(--text-ink-mid); }
+.tx-empty { padding: 30px 0; text-align: center; color: var(--text-ink-mid); font-size: 13.5px; }
+
+/* ============================================================
+   Filters / pagination
+   ============================================================ */
+.filters-panel { padding: 16px 22px; }
+.filters-row { display: flex; gap: 14px; align-items: flex-end; flex-wrap: wrap; }
+.filters-row label { min-width: 130px; }
+.pagination { display: flex; gap: 8px; justify-content: center; margin-top: 16px; }
+
+/* ============================================================
+   Admin tables
+   ============================================================ */
+.admin-tabs { display: flex; gap: 6px; margin-bottom: 18px; }
+.admin-tab {
+  padding: 8px 16px; border-radius: 20px; border: 1px solid #DCD8CA;
+  background: #fff; color: var(--text-ink-mid); font-size: 13px; font-weight: 600; cursor: pointer;
+}
+.admin-tab.active { background: var(--ink-800); color: var(--text-hi); border-color: var(--ink-800); }
+table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+th { text-align: left; font-family: var(--font-mono); font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-ink-mid); padding: 8px 10px; border-bottom: 1.5px solid #E5E1D3; }
+td { padding: 10px 10px; border-bottom: 1px solid #F0ECE0; }
+tr:last-child td { border-bottom: none; }
+.badge { font-size: 10.5px; font-weight: 700; padding: 3px 8px; border-radius: 20px; text-transform: uppercase; }
+.badge.ACTIVE { background: rgba(47,191,135,0.14); color: var(--emerald-dim); }
+.badge.FROZEN { background: rgba(212,166,87,0.16); color: #8A6512; }
+.badge.CLOSED { background: rgba(225,91,68,0.12); color: var(--coral); }
+.row-actions { display: flex; gap: 6px; }
+
+/* ============================================================
+   Toast
+   ============================================================ */
+.toast {
+  position: fixed;
+  top: 22px; right: 26px;
+  background: var(--ink-800);
+  color: var(--text-hi);
+  padding: 13px 18px;
+  border-radius: var(--radius-sm);
+  font-size: 13.5px;
+  font-weight: 600;
+  border-left: 3px solid var(--emerald);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+  z-index: 999;
+  animation: toast-in 0.25s ease;
+}
+.toast.error { border-left-color: var(--coral); }
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   Modal
+   ============================================================ */
+.modal-backdrop {
+  position: fixed; inset: 0;
+  background: rgba(11,18,32,0.55);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+.modal {
+  background: #fff;
+  border-radius: var(--radius-lg);
+  padding: 26px;
+  max-width: 420px;
+  width: 100%;
+  color: var(--text-ink);
+}
+.modal h3 { font-family: var(--font-display); margin-top: 0; }
+.modal-actions { display: flex; gap: 10px; margin-top: 18px; }
+.modal-actions .btn { flex: 1; }
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+@media (max-width: 860px) {
+  .app-shell { grid-template-columns: 1fr; }
+  .sidebar { position: static; height: auto; flex-direction: row; align-items: center; padding: 14px 16px; }
+  .sidebar .brand { margin-right: auto; }
+  .nav { margin-top: 0; flex-direction: row; }
+  .sidebar-footer { display: none; }
+  .main { padding: 24px 18px 40px; }
+  .panel-grid { grid-template-columns: 1fr; }
+  .wallet-stubs { grid-template-columns: 1fr; }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}

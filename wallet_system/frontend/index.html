@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ledger — Digital Wallet & Transfers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ============ AUTH SCREEN ============ -->
+<div id="auth-screen" class="auth-screen">
+  <div class="auth-card">
+    <div class="brand">
+      <span class="brand-mark">§</span>
+      <span class="brand-name">Ledger</span>
+    </div>
+    <p class="auth-tagline">A calm place to hold and move money.</p>
+
+    <div class="auth-tabs">
+      <button class="auth-tab active" data-tab="login">Log in</button>
+      <button class="auth-tab" data-tab="register">Create account</button>
+    </div>
+
+    <form id="login-form" class="auth-form">
+      <label>Email
+        <input type="email" id="login-email" required placeholder="you@example.com">
+      </label>
+      <label>Password
+        <input type="password" id="login-password" required placeholder="••••••••">
+      </label>
+      <div class="form-error" id="login-error"></div>
+      <button type="submit" class="btn btn-primary btn-block">Log in</button>
+      <p class="auth-hint">Admin demo — admin@wallet.com / admin123</p>
+    </form>
+
+    <form id="register-form" class="auth-form hidden">
+      <label>Full name
+        <input type="text" id="register-name" required placeholder="Alice Khan">
+      </label>
+      <label>Email
+        <input type="email" id="register-email" required placeholder="you@example.com">
+      </label>
+      <label>Password
+        <input type="password" id="register-password" required placeholder="At least 6 characters">
+      </label>
+      <div class="form-error" id="register-error"></div>
+      <button type="submit" class="btn btn-primary btn-block">Create account</button>
+    </form>
+  </div>
+</div>
+
+<!-- ============ APP SHELL ============ -->
+<div id="app-shell" class="app-shell hidden">
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand-mark">§</span>
+      <span class="brand-name">Ledger</span>
+    </div>
+
+    <nav class="nav">
+      <button class="nav-item active" data-view="dashboard">
+        <span class="nav-dot"></span> Dashboard
+      </button>
+      <button class="nav-item" data-view="transfer">
+        <span class="nav-dot"></span> Move money
+      </button>
+      <button class="nav-item" data-view="history">
+        <span class="nav-dot"></span> Statement
+      </button>
+      <button class="nav-item admin-only hidden" data-view="admin">
+        <span class="nav-dot"></span> Admin
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-chip">
+        <div class="user-avatar" id="user-avatar">A</div>
+        <div>
+          <div class="user-name" id="user-name">—</div>
+          <div class="user-role" id="user-role">—</div>
+        </div>
+      </div>
+      <button class="btn btn-ghost btn-block" id="logout-btn">Log out</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div id="toast" class="toast hidden"></div>
+
+    <!-- ---------- DASHBOARD ---------- -->
+    <section id="view-dashboard" class="view">
+      <header class="view-header">
+        <div>
+          <p class="eyebrow">Overview</p>
+          <h1>Your wallets</h1>
+        </div>
+        <button class="btn btn-primary" id="open-create-wallet">+ New wallet</button>
+      </header>
+
+      <div id="wallet-stubs" class="wallet-stubs"></div>
+
+      <div class="panel-grid">
+        <div class="panel">
+          <h3>Deposit</h3>
+          <p class="panel-sub">Add funds to one of your wallets.</p>
+          <form id="deposit-form" class="stack-form">
+            <label>Wallet
+              <select id="deposit-wallet" required></select>
+            </label>
+            <label>Amount
+              <input type="number" id="deposit-amount" min="0.01" step="0.01" required placeholder="0.00">
+            </label>
+            <label>Note <span class="optional">optional</span>
+              <input type="text" id="deposit-note" placeholder="e.g. Salary">
+            </label>
+            <div class="form-error" id="deposit-error"></div>
+            <button type="submit" class="btn btn-success btn-block">Deposit funds</button>
+          </form>
+        </div>
+
+        <div class="panel">
+          <h3>Withdraw</h3>
+          <p class="panel-sub">Move funds out of a wallet.</p>
+          <form id="withdraw-form" class="stack-form">
+            <label>Wallet
+              <select id="withdraw-wallet" required></select>
+            </label>
+            <label>Amount
+              <input type="number" id="withdraw-amount" min="0.01" step="0.01" required placeholder="0.00">
+            </label>
+            <label>Note <span class="optional">optional</span>
+              <input type="text" id="withdraw-note" placeholder="e.g. ATM">
+            </label>
+            <div class="form-error" id="withdraw-error"></div>
+            <button type="submit" class="btn btn-danger btn-block">Withdraw funds</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header-row">
+          <h3>Recent activity</h3>
+          <button class="link-btn" data-goto="history">View full statement →</button>
+        </div>
+        <div id="recent-tx" class="tx-list"></div>
+      </div>
+    </section>
+
+    <!-- ---------- TRANSFER ---------- -->
+    <section id="view-transfer" class="view hidden">
+      <header class="view-header">
+        <div>
+          <p class="eyebrow">Send</p>
+          <h1>Move money</h1>
+        </div>
+      </header>
+
+      <div class="panel panel-narrow">
+        <form id="transfer-form" class="stack-form">
+          <label>From wallet
+            <select id="transfer-from" required></select>
+          </label>
+          <label>Recipient wallet ID
+            <input type="number" id="transfer-to" required placeholder="e.g. 2">
+            <span class="field-hint">Ask the recipient for their wallet ID (shown on their dashboard).</span>
+          </label>
+          <label>Amount
+            <input type="number" id="transfer-amount" min="0.01" step="0.01" required placeholder="0.00">
+          </label>
+          <label>What's this for? <span class="optional">optional</span>
+            <input type="text" id="transfer-note" placeholder="e.g. Rent split">
+          </label>
+          <div class="form-error" id="transfer-error"></div>
+          <div class="form-success" id="transfer-success"></div>
+          <button type="submit" class="btn btn-primary btn-block">Review & send</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- ---------- HISTORY ---------- -->
+    <section id="view-history" class="view hidden">
+      <header class="view-header">
+        <div>
+          <p class="eyebrow">Ledger</p>
+          <h1>Statement</h1>
+        </div>
+      </header>
+
+      <div class="panel filters-panel">
+        <div class="filters-row">
+          <label>Type
+            <select id="filter-type">
+              <option value="">All</option>
+              <option value="DEPOSIT">Deposit</option>
+              <option value="WITHDRAWAL">Withdrawal</option>
+              <option value="TRANSFER">Transfer</option>
+              <option value="ADJUSTMENT">Adjustment</option>
+            </select>
+          </label>
+          <label>Status
+            <select id="filter-status">
+              <option value="">All</option>
+              <option value="COMPLETED">Completed</option>
+              <option value="FAILED">Failed</option>
+              <option value="PENDING">Pending</option>
+              <option value="CANCELLED">Cancelled</option>
+            </select>
+          </label>
+          <label>Reference
+            <input type="text" id="filter-reference" placeholder="TXN-...">
+          </label>
+          <button class="btn btn-ghost" id="apply-filters">Apply</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div id="history-tx" class="tx-list"></div>
+        <div class="pagination" id="history-pagination"></div>
+      </div>
+    </section>
+
+    <!-- ---------- ADMIN ---------- -->
+    <section id="view-admin" class="view hidden">
+      <header class="view-header">
+        <div>
+          <p class="eyebrow">Control room</p>
+          <h1>Admin</h1>
+        </div>
+      </header>
+
+      <div class="admin-tabs">
+        <button class="admin-tab active" data-admintab="wallets">Wallets</button>
+        <button class="admin-tab" data-admintab="users">Users</button>
+        <button class="admin-tab" data-admintab="failed">Failed transactions</button>
+      </div>
+
+      <div id="admin-wallets" class="admin-pane">
+        <div class="panel">
+          <div id="admin-wallets-table"></div>
+        </div>
+      </div>
+
+      <div id="admin-users" class="admin-pane hidden">
+        <div class="panel">
+          <div id="admin-users-table"></div>
+        </div>
+      </div>
+
+      <div id="admin-failed" class="admin-pane hidden">
+        <div class="panel">
+          <div id="admin-failed-table"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- ============ MODALS ============ -->
+<div id="modal-backdrop" class="modal-backdrop hidden">
+  <div class="modal" id="modal-content"></div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
